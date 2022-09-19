@@ -26,13 +26,16 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user){
+        log.info(user.getEmail());
         validateUserToCreate(user);
         users.put(user.getEmail(), user);
+
         return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user){
+        log.info(user.getEmail() + " updating... ");
         validateUserToUpdate(user);
         users.put(user.getEmail(), user);
         return user;
@@ -61,7 +64,10 @@ public class UserController {
                 .stream()
                 .noneMatch(user1 -> user.getLogin().equals(user1.getLogin()));
 
-        if (!isCorrectLogin) throw new InvalidLoginException("This login already exists");
+        if (!isCorrectLogin) {
+            log.info(user.getLogin());
+            throw new InvalidLoginException("This login already exists");
+        }
     }
 
     private void validateEmail(User user){
@@ -69,12 +75,18 @@ public class UserController {
                 && user.getEmail().contains("@")
                 && !user.getEmail().equals("");
 
-        if (!isCorrectEmail) throw new InvalidEmailException("Email you entered is incorrect");
+        if (!isCorrectEmail) {
+            log.info(user.getEmail());
+            throw new InvalidEmailException("Email you entered is incorrect");
+        }
     }
 
     private void validateBirthday(User user){
         boolean isCorrectBirthday = user.getBirthday().isBefore(LocalDate.now());
-        if (!isCorrectBirthday) throw new InvalidBirthdayException("Birthday cannot be later than current date");
+        if (!isCorrectBirthday) {
+            log.info(user.getBirthday().toString());
+            throw new InvalidBirthdayException("Birthday cannot be later than current date");
+        }
     }
 
     private void checkEmailAbsence(User user){
@@ -82,6 +94,8 @@ public class UserController {
                 .keySet()
                 .stream()
                 .noneMatch(email -> user.getEmail().equals(email));
+
+        log.info("Is email absent: "+isEmailAbsent);
 
         if (!isEmailAbsent) throw new EmailAlreadyExistsException("This email already exists");
     }
@@ -91,6 +105,8 @@ public class UserController {
                 .keySet()
                 .stream()
                 .noneMatch(email -> user.getEmail().equals(email));
+
+        log.info("Email does not exist: "+emailDoesNotExist);
 
         if (emailDoesNotExist) throw new UserDoesNotExistException("This email already exists");
     }
