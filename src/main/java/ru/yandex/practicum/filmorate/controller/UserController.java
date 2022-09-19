@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,14 +25,14 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user){
+    public User create(@Valid @RequestBody User user){
         validateUserToCreate(user);
         users.put(user.getEmail(), user);
         return user;
     }
 
     @PutMapping
-    public User update(@RequestBody User user){
+    public User update(@Valid @RequestBody User user){
         validateUserToUpdate(user);
         users.put(user.getEmail(), user);
         return user;
