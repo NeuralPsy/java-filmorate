@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.EmailAlreadyExistsException;
-import ru.yandex.practicum.filmorate.exception.InvalidBirthdayException;
-import ru.yandex.practicum.filmorate.exception.InvalidEmailException;
-import ru.yandex.practicum.filmorate.exception.InvalidLoginException;
+import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -17,7 +14,7 @@ import java.util.Map;
 @RequestMapping(value = "/users")
 public class UserController {
 
-    Map<Integer, User> users = new HashMap<>();
+    Map<String, User> users = new HashMap<>();
 
     @GetMapping
     public List<User> findAll(){
@@ -26,15 +23,30 @@ public class UserController {
 
     @PostMapping
     public User create(@RequestBody User user){
-        validateUser(user);
+        validateUserToCreate(user);
+        users.put(user.getEmail(), user);
         return user;
     }
 
-    private void validateUser(User user)
-            throws EmailAlreadyExistsException, InvalidBirthdayException,
+    @PutMapping
+    public User update(@RequestBody User user){
+        validateUserToUpdate(user);
+        users.put(user.getEmail(), user);
+        return user;
+    }
+
+    private void validateUserToCreate(User user) throws EmailAlreadyExistsException, InvalidBirthdayException,
             InvalidEmailException, InvalidLoginException {
 
-        checkIfEmailExists(user);
+        checkEmailAbsence(user);
+        validateLogin(user);
+        validateEmail(user);
+        validateBirthday(user);
+    }
+
+    private void validateUserToUpdate(User user) throws EmailAlreadyExistsException, InvalidBirthdayException,
+            InvalidEmailException, InvalidLoginException, UserDoesNotExistException {
+        checkEmailExistence(user);
         validateLogin(user);
         validateEmail(user);
         validateBirthday(user);
@@ -62,13 +74,22 @@ public class UserController {
         if (!isCorrectBirthday) throw new InvalidBirthdayException("Birthday cannot be later than current date");
     }
 
-    private void checkIfEmailExists(User user){
-        boolean isExistingEmail = users
+    private void checkEmailAbsence(User user){
+        boolean isEmailAbsent = users
                 .keySet()
                 .stream()
-                .anyMatch(email -> user.getEmail().equals(email));
+                .noneMatch(email -> user.getEmail().equals(email));
 
-        if (isExistingEmail) throw new EmailAlreadyExistsException("This email already exists");
+        if (!isEmailAbsent) throw new EmailAlreadyExistsException("This email already exists");
+    }
+
+    private void checkEmailExistence(User user){
+        boolean emailDoesNotExist = users
+                .keySet()
+                .stream()
+                .noneMatch(email -> user.getEmail().equals(email));
+
+        if (emailDoesNotExist) throw new UserDoesNotExistException("This email already exists");
     }
 
 
