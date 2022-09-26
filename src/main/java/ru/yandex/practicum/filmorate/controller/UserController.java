@@ -2,11 +2,12 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,10 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
-    Map<String, User> users = new HashMap<>();
+    private Map<Integer, User> users = new HashMap<>();
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+
+    private static int userId = 1;
 
     @GetMapping
     public List<User> findAll(){
@@ -26,89 +30,71 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user){
-        log.info(user.getEmail());
-        validateUserToCreate(user);
-        users.put(user.getEmail(), user);
+        boolean isValid = validateUserToCreate(user);
+        if (!isValid) throw new ValidationException();
+        user.setId(userId++);
+        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
+        log.info("Creating user with ID: " + user.getId());
+        users.put(user.getId(), user);
 
         return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user){
-        log.info(user.getEmail() + " updating... ");
-        validateUserToUpdate(user);
-        users.put(user.getEmail(), user);
+        log.info(user.getEmail() + " updating");
+        boolean isValid = validateUserToUpdate(user);
+        if (!isValid) throw new ValidationException();
+        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
+        users.put(user.getId(), user);
         return user;
     }
 
-    private void validateUserToCreate(User user) throws EmailAlreadyExistsException, InvalidBirthdayException,
-            InvalidEmailException, InvalidLoginException {
+    private boolean validateUserToCreate(User user) {
 
-        checkEmailAbsence(user);
-        validateLogin(user);
-        validateEmail(user);
-        validateBirthday(user);
+        boolean isValid = !identifyUser(user)
+                && validateLogin(user)
+//                && validateEmail(user)
+                && validateBirthday(user);
+        return isValid;
     }
 
-    private void validateUserToUpdate(User user) throws EmailAlreadyExistsException, InvalidBirthdayException,
-            InvalidEmailException, InvalidLoginException, UserDoesNotExistException {
-        checkEmailExistence(user);
-        validateLogin(user);
-        validateEmail(user);
-        validateBirthday(user);
+    private boolean validateUserToUpdate(User user) {
+        boolean isValid = identifyUser(user)
+                && validateLogin(user)
+//                && validateEmail(user)
+                && validateBirthday(user)
+                && validateUserId(user);
+        return isValid;
     }
 
-    private void validateLogin(User user){
-        boolean isCorrectLogin = users
-                .values()
-                .stream()
-                .noneMatch(user1 -> user.getLogin().equals(user1.getLogin()));
-
-        if (!isCorrectLogin) {
-            log.info(user.getLogin());
-            throw new InvalidLoginException("This login already exists");
-        }
+    private boolean validateLogin(User user){
+        boolean isCorrectLogin = !user.getLogin().isBlank() && !user.getLogin().contains(" ");
+        log.info("Long validation: " + user.getLogin());
+        return isCorrectLogin;
     }
 
-    private void validateEmail(User user){
-        boolean isCorrectEmail = !user.getEmail().equals(null)
-                && user.getEmail().contains("@")
-                && !user.getEmail().equals("");
-
-        if (!isCorrectEmail) {
-            log.info(user.getEmail());
-            throw new InvalidEmailException("Email you entered is incorrect");
-        }
+    private boolean validateBirthday(User user){
+        log.info(user.getBirthday());
+        boolean isCorrectBirthday = LocalDate.parse(user.getBirthday(), formatter).isBefore(LocalDate.now());
+        return isCorrectBirthday;
     }
 
-    private void validateBirthday(User user){
-        boolean isCorrectBirthday = user.getBirthday().isBefore(LocalDate.now());
-        if (!isCorrectBirthday) {
-            log.info(user.getBirthday().toString());
-            throw new InvalidBirthdayException("Birthday cannot be later than current date");
-        }
+
+    private boolean identifyUser(User user){
+        boolean isIdentified = users.containsKey(user.getId());
+
+        log.info("User identification: "+isIdentified);
+
+        return isIdentified;
     }
 
-    private void checkEmailAbsence(User user){
-        boolean isEmailAbsent = users
-                .keySet()
-                .stream()
-                .noneMatch(email -> user.getEmail().equals(email));
+    private boolean validateUserId(User user){
+        Integer userId = user.getId();
+        boolean isValid= !userId.equals(null)
+                && userId > 0;
 
-        log.info("Is email absent: "+isEmailAbsent);
-
-        if (!isEmailAbsent) throw new EmailAlreadyExistsException("This email already exists");
-    }
-
-    private void checkEmailExistence(User user){
-        boolean emailDoesNotExist = users
-                .keySet()
-                .stream()
-                .noneMatch(email -> user.getEmail().equals(email));
-
-        log.info("Email does not exist: "+emailDoesNotExist);
-
-        if (emailDoesNotExist) throw new UserDoesNotExistException("This email already exists");
+        return isValid;
     }
 
 
