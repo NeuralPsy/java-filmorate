@@ -16,6 +16,7 @@ public class User {
     @Email
     String email;
 
+    @NotEmpty
     String login;
 
     String name;

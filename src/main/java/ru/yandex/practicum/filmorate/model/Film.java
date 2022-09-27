@@ -15,11 +15,13 @@ public class Film {
     private int id;
 
     @NotBlank
-    private String name;
+    private String name; //проверка длины имени по ТХ не нужна
 
-    @Size(min=0, max=200)
+    @Size(min=0, max=200) //проверка длины описания
     private String description;
 
+    @NotEmpty
+    @NonNull
     private String releaseDate;
 
     @Positive

@@ -54,7 +54,7 @@ public class UserController {
 
         boolean isValid = !identifyUser(user)
                 && validateLogin(user)
-//                && validateEmail(user)
+                && validateEmail(user)
                 && validateBirthday(user);
         return isValid;
     }
