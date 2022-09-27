@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.DescriptionValidationException;
-import ru.yandex.practicum.filmorate.exception.FilmDurationValidationException;
-import ru.yandex.practicum.filmorate.exception.FilmIdentificationException;
-import ru.yandex.practicum.filmorate.exception.ReleaseDateValidationException;
+import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.Valid;
@@ -63,6 +60,7 @@ public class FilmController {
         validateReleaseDate(film);
         validateDescription(film);
         validateDuration(film);
+        validateName(film);
 
 //        return isValid;
     }
@@ -109,5 +107,10 @@ public class FilmController {
         log.info("Film identification: {}", isValid);
         if (!isValid) throw new FilmIdentificationException("Film with ID " + film.getId() + " is not found");
 //        return isValid;
+    }
+
+    private void validateName(Film film){
+        boolean isValid = !film.getName().isEmpty() && !film.getName().isBlank() && film.getName().equals(null);
+        if (!isValid) throw new FilmNameValidationException("Film name cannot be empty");
     }
 }

@@ -21,11 +21,6 @@ class UserControllerTest {
         user  = new User();
     }
 
-    @AfterEach
-    void nullUser(){
-        user = null;
-    }
-
     @Test
     void createUserWithoutNameTest(){
         user.setEmail("iggy@yahoo.com");
