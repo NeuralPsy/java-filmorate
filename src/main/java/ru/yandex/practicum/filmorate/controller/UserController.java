@@ -62,9 +62,16 @@ public class UserController {
     private boolean validateUserToUpdate(User user) {
         boolean isValid = identifyUser(user)
                 && validateLogin(user)
-//                && validateEmail(user)
+                && validateEmail(user)
                 && validateBirthday(user)
                 && validateUserId(user);
+        return isValid;
+    }
+
+    private boolean validateEmail(User user) {
+        boolean isValid = user.getEmail().contains("@")
+                && user.getEmail().contains(".")
+                && !user.getEmail().contains(" ");
         return isValid;
     }
 
