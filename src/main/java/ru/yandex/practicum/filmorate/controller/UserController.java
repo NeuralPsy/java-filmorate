@@ -31,9 +31,7 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) throws LoginValidationException, EmailValidationException,
             BirthDayValidationException{
-//        boolean isValid = validateUserToCreate(user);
         validateUserToCreate(user);
-//        if (!isValid) throw new ValidationException();
         user.setId(userId++);
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
         log.info("Creating user with ID: " + user.getId());
@@ -47,38 +45,23 @@ public class UserController {
             BirthDayValidationException, UserIdentificationException, UserIDValidationException{
         log.info(user.getEmail() + " updating");
         validateUserToUpdate(user);
-//        boolean isValid = validateUserToUpdate(user);
-//        if (!isValid) throw new ValidationException();
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
         users.put(user.getId(), user);
         return user;
     }
 
     private void validateUserToCreate(User user) {
-
-//        boolean isValid = !identifyUser(user)
-//                && validateLogin(user)
-//                && validateEmail(user)
-//                && validateBirthday(user);
-
          validateLogin(user);
          validateEmail(user);
          validateBirthday(user);
-//        return isValid;
     }
 
     private void validateUserToUpdate(User user) {
-//        boolean isValid = identifyUser(user)
-//                && validateLogin(user)
-//                && validateEmail(user)
-//                && validateBirthday(user)
-//                && validateUserId(user);
         identifyUser(user);
         validateLogin(user);
         validateEmail(user);
         validateBirthday(user);
         validateUserId(user);
-//        return isValid;
     }
 
     private void validateEmail(User user) {
@@ -87,21 +70,18 @@ public class UserController {
                 && !user.getEmail().contains(" ");
         log.info("Email validation: {}", isValid);
         if (!isValid) throw new EmailValidationException("Email is not correct");
-//        return isValid;
     }
 
     private void validateLogin(User user){
         boolean isCorrectLogin = !user.getLogin().isBlank() && !user.getLogin().contains(" ");
         log.info("Login validation: {}", isCorrectLogin);
         if (!isCorrectLogin) throw new LoginValidationException("Login should not be empty or contain spaces");
-        //return isCorrectLogin;
     }
 
     private void validateBirthday(User user){
         boolean isCorrectBirthday = LocalDate.parse(user.getBirthday(), formatter).isBefore(LocalDate.now());
         log.info("Birthday validation: {}", user.getBirthday());
         if (!isCorrectBirthday) throw new BirthDayValidationException("Birthday cannot be after current date");
-//        return isCorrectBirthday;
     }
 
 
@@ -109,8 +89,6 @@ public class UserController {
         boolean isIdentified = users.containsKey(user.getId());
         log.info("User identification: "+isIdentified);
         if (!isIdentified) throw new UserIdentificationException("User with ID " + user.getId() + " is not found");
-
-//        return isIdentified;
     }
 
     private void validateUserId(User user){
@@ -118,8 +96,6 @@ public class UserController {
         boolean isValid= !userId.equals(null)
                 && userId > 0;
         if (!isValid) throw new UserIDValidationException("User ID is not correct");
-
-//        return isValid;
     }
 
 
