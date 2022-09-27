@@ -84,7 +84,6 @@ public class UserController {
         if (!isCorrectBirthday) throw new BirthDayValidationException("Birthday cannot be after current date");
     }
 
-
     private void identifyUser(User user){
         boolean isIdentified = users.containsKey(user.getId());
         log.info("User identification: "+isIdentified);
@@ -97,8 +96,5 @@ public class UserController {
                 && userId > 0;
         if (!isValid) throw new UserIDValidationException("User ID is not correct");
     }
-
-
-
 
 }

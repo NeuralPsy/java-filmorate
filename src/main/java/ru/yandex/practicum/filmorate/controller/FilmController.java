@@ -90,7 +90,7 @@ public class FilmController {
     }
 
     private void validateName(Film film){
-        boolean isValid = !film.getName().isEmpty() && !film.getName().isBlank() && film.getName().equals(null);
+        boolean isValid = !film.getName().isEmpty() && !film.getName().isBlank();
         if (!isValid) throw new FilmNameValidationException("Film name cannot be empty");
     }
 }
