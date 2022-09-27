@@ -21,10 +21,9 @@ public class Film {
     private String description;
 
     @NotEmpty
-    @NonNull
     private String releaseDate;
 
-    @Positive
+    @Positive //валидация продолжительности фильма
     private long duration;
 
 

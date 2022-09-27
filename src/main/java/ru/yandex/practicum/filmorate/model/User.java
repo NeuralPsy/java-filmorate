@@ -13,10 +13,9 @@ public class User {
 
     int id;
 
-    @Email
+    @Email //валидация имейла
     String email;
 
-    @NotEmpty
     String login;
 
     String name;

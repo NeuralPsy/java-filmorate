@@ -51,17 +51,24 @@ public class FilmController {
     private boolean validateFilmToCreate(Film film) {
         boolean isValid = validateReleaseDate(film)
                 && validateDescription(film)
+                && validateDuration(film)
                 && !identifyFilm(film);
         return isValid;
     }
 
 
+
     private boolean validateFilmToUpdate(Film film) {
         boolean isValid  = validateReleaseDate(film)
                 && validateDescription(film)
+                && validateDuration(film)
                 && identifyFilm(film);
         log.info("Film validation: {}", isValid);
         return isValid;
+    }
+
+    private boolean validateDuration(Film film) {
+        return film.getDuration() > 0;
     }
 
     private boolean validateReleaseDate(Film film){
