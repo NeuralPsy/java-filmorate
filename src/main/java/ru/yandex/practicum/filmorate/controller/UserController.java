@@ -29,7 +29,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user){
+    public User create(@Valid @RequestBody User user) throws LoginValidationException, EmailValidationException,
+            BirthDayValidationException{
 //        boolean isValid = validateUserToCreate(user);
         validateUserToCreate(user);
 //        if (!isValid) throw new ValidationException();
@@ -42,7 +43,8 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user){
+    public User update(@Valid @RequestBody User user) throws LoginValidationException, EmailValidationException,
+            BirthDayValidationException, UserIdentificationException, UserIDValidationException{
         log.info(user.getEmail() + " updating");
         validateUserToUpdate(user);
 //        boolean isValid = validateUserToUpdate(user);
@@ -90,7 +92,7 @@ public class UserController {
 
     private void validateLogin(User user){
         boolean isCorrectLogin = !user.getLogin().isBlank() && !user.getLogin().contains(" ");
-        log.info("Long validation: " + user.getLogin());
+        log.info("Login validation: {}", isCorrectLogin);
         if (!isCorrectLogin) throw new LoginValidationException("Login should not be empty or contain spaces");
         //return isCorrectLogin;
     }
