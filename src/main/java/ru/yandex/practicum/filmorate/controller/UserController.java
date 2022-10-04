@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -18,10 +19,16 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
+    private final UserService userService;
+
     private Map<Integer, User> users = new HashMap<>();
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
 
     private static int userId = 1;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public List<User> findAll(){
