@@ -34,24 +34,24 @@ public class FilmController {
 
     @GetMapping
     public List<Film> findAll(){
-        return new ArrayList<>(films.values());
+        return filmService.findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        log.info("Creating film {}", film.getName());
-        validateFilmToCreate(film);
-        film.setId(id++);
-        films.put(film.getId(), film);
-        return film;
+//        log.info("Creating film {}", film.getName());
+//        validateFilmToCreate(film);
+//        film.setId(id++);
+//        films.put(film.getId(), film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        log.info("Updating film {}", film.getName());
-        validateFilmToUpdate(film);
-        films.put(film.getId(), film);
-        return film;
+//        log.info("Updating film {}", film.getName());
+//        validateFilmToUpdate(film);
+//        films.put(film.getId(), film);
+        return filmService.updateFilm(film);
     }
 
     private void validateFilmToCreate(Film film) {
