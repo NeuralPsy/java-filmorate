@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,6 +54,18 @@ public class InMemoryFilmStorage implements FilmStorage{
     public Film getById(Integer filmId){
         identifyById(filmId);
         return films.get(filmId);
+    }
+
+    @Override
+    public Integer likeFilm(Integer filmId, Integer userId){
+        identifyById(filmId);
+        return films.get(filmId).like(userId);
+    }
+
+    @Override
+    public Integer unlikeFilm(Integer filmId, Integer userId){
+        identifyById(filmId);
+        return films.get(filmId).unlike(userId);
     }
 
     private void validateFilmToCreate(Film film) {

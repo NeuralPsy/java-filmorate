@@ -8,23 +8,39 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
 
     private int id;
 
-    @NotBlank
-    private String name; //проверка длины имени по ТХ не нужна
+    private Set<Integer> usersWhoLiked = new HashSet<>();
 
-    @Size(min=0, max=200) //проверка длины описания
+    @NotBlank
+    private String name;
+
+    @Size(min=0, max=200)
     private String description;
 
     @NotEmpty
     private String releaseDate;
 
-    @Positive //валидация продолжительности фильма
+    @Positive
     private long duration;
 
+    public Integer like(Integer userId) {
+        usersWhoLiked.add(userId);
+        return usersWhoLiked.size();
+    }
 
+    public Integer unlike(Integer userId) {
+        usersWhoLiked.remove(userId);
+        return usersWhoLiked.size();
+    }
+
+    public Integer getLikesCount(){
+        return usersWhoLiked.size();
+    }
 }

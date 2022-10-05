@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/films")
-@Slf4j
 public class FilmController {
 
     private Map<Integer, Film> films = new HashMap<>();
@@ -41,18 +40,11 @@ public class FilmController {
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-//        log.info("Creating film {}", film.getName());
-//        validateFilmToCreate(film);
-//        film.setId(id++);
-//        films.put(film.getId(), film);
         return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-//        log.info("Updating film {}", film.getName());
-//        validateFilmToUpdate(film);
-//        films.put(film.getId(), film);
         return filmService.updateFilm(film);
     }
 
@@ -66,50 +58,18 @@ public class FilmController {
         return filmService.getFilm(Integer.valueOf(filmId));
     }
 
-//    private void validateFilmToCreate(Film film) {
-//        validateReleaseDate(film);
-//        validateDescription(film);
-//        validateDuration(film);
-//        validateName(film);
-//
-//    }
-//
-//
-//
-//    private void validateFilmToUpdate(Film film) {
-//
-//        validateReleaseDate(film);
-//        validateDescription(film);
-//        validateDuration(film);
-//        identifyFilm(film);
-//    }
-//
-//    private void validateDuration(Film film) {
-//        log.info("Duration validation: {}", film.getDuration() < 0);
-//        if (film.getDuration() < 0) throw new FilmDurationValidationException("Duration value should be positive");
-//    }
-//
-//    private void validateReleaseDate(Film film){
-//        boolean isReleaseDateValid = LocalDate.parse(film.getReleaseDate(), formatter)
-//                .isAfter(LocalDate.of(1895, 12, 28));
-//        log.info("Release date validation: {}", isReleaseDateValid);
-//        if (!isReleaseDateValid) throw new ReleaseDateValidationException("Film release date should not be earlier " +
-//                "than December 28th of 1895");
-//    }
-//
-//    private void validateDescription(Film film){
-//        if (film.getDescription().length() > 200)
-//            throw new DescriptionValidationException("Film description should not be more than 200 symbols");
-//    }
-//
-//    private void identifyFilm(Film film){
-//        boolean isValid = films.containsKey(film.getId());
-//        log.info("Film identification: {}", isValid);
-//        if (!isValid) throw new FilmIdentificationException("Film with ID " + film.getId() + " is not found");
-//    }
-//
-//    private void validateName(Film film){
-//        boolean isValid = !film.getName().isEmpty() && !film.getName().isBlank();
-//        if (!isValid) throw new FilmNameValidationException("Film name cannot be empty");
-//    }
+    @PutMapping("/films/{filmId}/like/{userId}")
+    public Integer likeFilm(@PathVariable String filmId, @PathVariable String userId){
+        return filmService.likeFilm(Integer.valueOf(filmId), Integer.valueOf(userId));
+    }
+
+    @DeleteMapping("/films/{filmId}/like/{userId}")
+    public Integer unlikeFilm(@PathVariable String filmId, @PathVariable String userId){
+        return filmService.unlikeFilm(Integer.valueOf(filmId), Integer.valueOf(userId));
+    }
+
+    @GetMapping("/films/popular")
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
+        return filmService.showTopFilms(count);
+    }
 }
