@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -26,5 +27,25 @@ public class UserService {
 
     public User updateUser(User user) {
         return storage.updateUser(user);
+    }
+
+    public Integer addFriend(Integer id, Integer friendId) {
+        return storage.addFriend(id, friendId);
+    }
+
+    public Integer removeFriend(Integer id, Integer friendId) {
+        return storage.removeFriend(id, friendId);
+    }
+
+    public List<Integer> getFriendList(Integer id) {
+        return storage.getFriendList(id);
+    }
+
+    public List<Integer> getCommonFriends(Integer id, Integer otherId) {
+        return storage.getUserById(id)
+                .getFriendList()
+                .stream()
+                .filter(storage.getUserById(otherId).getFriendList()::contains)
+                .collect(Collectors.toList());
     }
 }
