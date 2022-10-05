@@ -57,8 +57,13 @@ public class FilmController {
     }
 
     @DeleteMapping("/films/{filmId}")
-    public Film remove(@PathVariable String filmId){
+    public Integer remove(@PathVariable String filmId){
         return filmService.removeFilm(Integer.getInteger(filmId));
+    }
+
+    @GetMapping("/films/{filmId}")
+    public Film getFilm(@PathVariable String filmId){
+        return filmService.getFilm(Integer.valueOf(filmId));
     }
 
 //    private void validateFilmToCreate(Film film) {

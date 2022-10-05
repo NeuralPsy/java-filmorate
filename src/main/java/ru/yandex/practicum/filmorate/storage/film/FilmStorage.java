@@ -8,7 +8,7 @@ public interface FilmStorage {
 
     Film add(Film film);
 
-    Film remove(Film film);
+    Integer remove(Integer filmId);
 
     Film update(Film film);
 

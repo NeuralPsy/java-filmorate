@@ -28,7 +28,11 @@ public class FilmService {
         return updateFilm(film);
     }
 
-    public Film removeFilm(Integer filmId){
-        return storage.remove(storage.getById(filmId));
+    public Integer removeFilm(Integer filmId){
+        return storage.remove(filmId);
+    }
+
+    public Film getFilm(Integer filmId){
+        return storage.getById(filmId);
     }
 }

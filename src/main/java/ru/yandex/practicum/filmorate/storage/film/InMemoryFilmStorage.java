@@ -35,10 +35,10 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film remove(Film film) {
-        identifyFilm(film);
-        films.remove(film.getId());
-        return film;
+    public Integer remove(Integer filmId) {
+        identifyById(filmId);
+        films.remove(filmId);
+        return filmId;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film getById(Integer filmId){
-        identifyFilm(films.get(filmId));
+        identifyById(filmId);
         return films.get(filmId);
     }
 
@@ -62,8 +62,6 @@ public class InMemoryFilmStorage implements FilmStorage{
         validateName(film);
 
     }
-
-
 
     private void validateFilmToUpdate(Film film) {
         validateReleaseDate(film);
@@ -99,6 +97,12 @@ public class InMemoryFilmStorage implements FilmStorage{
     private void validateName(Film film){
         boolean isValid = !film.getName().isEmpty() && !film.getName().isBlank();
         if (!isValid) throw new FilmNameValidationException("Film name cannot be empty");
+    }
+
+    private void identifyById(Integer id){
+        boolean isValid = films.containsKey(id);
+        log.info("Film identification by ID: {}", isValid);
+        if (!isValid) throw new FilmIdentificationException("Film with ID " + id + " is not found");
     }
 
 }
