@@ -20,8 +20,6 @@ import java.util.Map;
 @RequestMapping(value = "/films")
 public class FilmController {
 
-    private Map<Integer, Film> films = new HashMap<>();
-
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
 
     private static int id = 1;
@@ -54,18 +52,18 @@ public class FilmController {
     }
 
     @GetMapping("/films/{filmId}")
-    public Film getFilm(@PathVariable String filmId){
-        return filmService.getFilm(Integer.valueOf(filmId));
+    public Film getFilm(@PathVariable Integer filmId){
+        return filmService.getFilm(filmId);
     }
 
     @PutMapping("/films/{filmId}/like/{userId}")
-    public Integer likeFilm(@PathVariable String filmId, @PathVariable String userId){
-        return filmService.likeFilm(Integer.valueOf(filmId), Integer.valueOf(userId));
+    public Integer likeFilm(@PathVariable Integer filmId, @PathVariable Integer userId){
+        return filmService.likeFilm(filmId, userId);
     }
 
     @DeleteMapping("/films/{filmId}/like/{userId}")
-    public Integer unlikeFilm(@PathVariable String filmId, @PathVariable String userId){
-        return filmService.unlikeFilm(Integer.valueOf(filmId), Integer.valueOf(userId));
+    public Integer unlikeFilm(@PathVariable Integer filmId, @PathVariable Integer userId){
+        return filmService.unlikeFilm(filmId, userId);
     }
 
     @GetMapping("/films/popular")
