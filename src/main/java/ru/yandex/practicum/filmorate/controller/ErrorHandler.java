@@ -11,16 +11,7 @@ import javax.validation.ValidationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({
-            BirthDayValidationException.class,
-            DescriptionValidationException.class,
-            EmailValidationException.class,
-            FilmDurationValidationException.class,
-            FilmNameValidationException.class,
-            LoginValidationException.class,
-            ReleaseDateValidationException.class,
-
-    })
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationExceptions(final ValidationException e){
         return new ErrorResponse(e.getMessage());

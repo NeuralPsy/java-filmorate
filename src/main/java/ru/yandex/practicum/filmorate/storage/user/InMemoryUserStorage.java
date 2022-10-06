@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -44,24 +44,42 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     public Integer addFriend(Integer id, Integer friendId){
+        identifyUserId(friendId);
+        identifyUserId(id);
         users.get(id).addFriend(friendId);
         users.get(friendId).addFriend(id);
         return friendId;
     }
 
     public Integer removeFriend(Integer id, Integer friendId){
+        identifyUserId(friendId);
+        identifyUserId(id);
         users.get(id).removeFriend(friendId);
         users.get(friendId).removeFriend(id);
         return friendId;
     }
 
     public List<Integer> getFriendList(Integer userId){
+        identifyUserId(userId);
         return users.get(userId).getFriendList();
     }
 
     public User getUserById(Integer id){
+        identifyUserId(id);
         return users.get(id);
     }
+
+    @Override
+    public List<Integer> getCommonFriends(Integer id, Integer otherId) {
+        identifyUserId(id);
+        identifyUserId(otherId);
+        return users.get(id)
+                .getFriendList()
+                .stream()
+                .filter(users.get(otherId).getFriendList()::contains)
+                .collect(Collectors.toList());
+    }
+
 
     private void validateUserToCreate(User user) {
         validateLogin(user);
@@ -103,11 +121,22 @@ public class InMemoryUserStorage implements UserStorage{
         if (!isIdentified) throw new UserIdentificationException("User with ID " + user.getId() + " is not found");
     }
 
+    private void identifyUserId(Integer id){
+        boolean isIdentified = users.containsKey(id);
+        log.info("User identification by ID: "+isIdentified);
+        if (!isIdentified) throw new UserIdentificationException("User with ID " + id + " is not found");
+    }
+
     private void validateUserId(User user){
         Integer userId = user.getId();
         boolean isValid= !userId.equals(null)
                 && userId > 0;
         if (!isValid) throw new UserIDValidationException("User ID is not correct");
+    }
+
+    private void validateIdValueFormat(Integer userId) {
+        boolean isValid = userId > 0;
+        if (!isValid) throw new UserIDValidationException("Wrong user ID value");
     }
 
 

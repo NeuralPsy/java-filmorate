@@ -42,10 +42,10 @@ public class UserService {
     }
 
     public List<Integer> getCommonFriends(Integer id, Integer otherId) {
-        return storage.getUserById(id)
-                .getFriendList()
-                .stream()
-                .filter(storage.getUserById(otherId).getFriendList()::contains)
-                .collect(Collectors.toList());
+        return storage.getCommonFriends(id, otherId);
+    }
+
+    public User getUser(Integer id) {
+        return storage.getUserById(id);
     }
 }

@@ -46,27 +46,27 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
-    @DeleteMapping("/films/{filmId}")
+    @DeleteMapping("/{filmId}")
     public Integer remove(@PathVariable String filmId){
         return filmService.removeFilm(Integer.getInteger(filmId));
     }
 
-    @GetMapping("/films/{filmId}")
+    @GetMapping("/{filmId}")
     public Film getFilm(@PathVariable Integer filmId){
         return filmService.getFilm(filmId);
     }
 
-    @PutMapping("/films/{filmId}/like/{userId}")
+    @PutMapping("/{filmId}/like/{userId}")
     public Integer likeFilm(@PathVariable Integer filmId, @PathVariable Integer userId){
         return filmService.likeFilm(filmId, userId);
     }
 
-    @DeleteMapping("/films/{filmId}/like/{userId}")
+    @DeleteMapping("/{filmId}/like/{userId}")
     public Integer unlikeFilm(@PathVariable Integer filmId, @PathVariable Integer userId){
         return filmService.unlikeFilm(filmId, userId);
     }
 
-    @GetMapping("/films/popular")
+    @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
         return filmService.showTopFilms(count);
     }
