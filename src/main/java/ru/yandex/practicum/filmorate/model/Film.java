@@ -45,7 +45,6 @@ public class Film {
         return userId;
     }
 
-    @JsonIgnore
     public Integer getLikesCount(){
         return usersWhoLiked.size();
     }
