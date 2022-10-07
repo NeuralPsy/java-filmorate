@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -16,6 +17,7 @@ public class Film {
 
     private long id;
 
+    @JsonIgnore
     private Set<Long> usersWhoLiked = new HashSet<>();
 
     @NotBlank
@@ -30,8 +32,11 @@ public class Film {
     @Positive
     private long duration;
 
+    @JsonIgnore
+    private int likesCount = 0;
     public Long like(Long userId) {
         usersWhoLiked.add(userId);
+        likesCount = usersWhoLiked.size();
         return userId;
     }
 
@@ -40,6 +45,7 @@ public class Film {
         return userId;
     }
 
+    @JsonIgnore
     public Integer getLikesCount(){
         return usersWhoLiked.size();
     }
