@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.ValidationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -66,8 +67,15 @@ public class InMemoryFilmStorage implements FilmStorage{
     @Override
     public Integer unlikeFilm(Long filmId, Long userId){
         identifyById(filmId);
+        identifyUserbyIdInFilm(filmId, userId);
         films.get(filmId).unlike(userId);
         return films.get(filmId).getLikesCount();
+    }
+
+    private void identifyUserbyIdInFilm(Long filmId, Long userId) {
+        boolean isValid = films.get(filmId).getUsersWhoLiked().contains(userId);
+        if(!isValid) throw new NotPossibleToUnlikeFilm("User with ID "
+                + userId + " didn't like the film. It is not possible to unlike");
     }
 
     private void validateFilmToCreate(Film film) {

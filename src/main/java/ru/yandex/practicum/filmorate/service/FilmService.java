@@ -49,8 +49,7 @@ public class FilmService {
     public List<Film> showTopFilms(Integer count) {
             return storage.findAll()
                     .stream()
-//                    .filter(film -> film.getLikesCount() > 0)
-                    .sorted((post1, post2) -> post1.getLikesCount().compareTo(post2.getLikesCount()))
+                    .sorted((film1, film2) -> film2.getLikesCount().compareTo(film1.getLikesCount()))
                     .limit(count)
                     .collect(Collectors.toList());
     }

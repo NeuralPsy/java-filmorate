@@ -20,7 +20,8 @@ public class ErrorHandler {
     @ExceptionHandler({
             UserIDValidationException.class,
             FilmIdentificationException.class,
-            UserIdentificationException.class})
+            UserIdentificationException.class,
+            NotPossibleToUnlikeFilm.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final ValidationException e){
         return new ErrorResponse(e.getMessage());
