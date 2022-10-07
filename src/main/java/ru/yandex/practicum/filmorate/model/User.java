@@ -7,15 +7,12 @@ import lombok.NonNull;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 public class User {
 
-    int id;
+    private Long id;
 
     @Email
     String email;
@@ -29,19 +26,19 @@ public class User {
 
     private Set<Integer> likedMovies = new HashSet<>();
 
-    private Set<Integer> friends = new HashSet<>();
+    private List<Long> friends = new ArrayList<>();
 
-    public Integer addFriend(Integer friendId){
-        friends.add(friendId);
-        return friendId;
+    public User addFriend(User user){
+        friends.add(user.getId());
+        return user;
     }
 
-    public Integer removeFriend(Integer friendId){
+    public Long removeFriend(Long friendId){
         friends.remove(friendId);
         return friendId;
     }
 
-    public List<Integer> getFriendList(){
+    public List<Long> getFriendList(){
         return new ArrayList<>(friends);
     }
 

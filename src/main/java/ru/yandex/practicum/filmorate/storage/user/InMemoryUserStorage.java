@@ -7,20 +7,17 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage{
 
-    private Map<Integer, User> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();
 
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
-    private static int userId = 1;
+    private static long userId = 1;
 
     public List<User> getAllUsers(){
         return new ArrayList<>(users.values());
@@ -43,15 +40,15 @@ public class InMemoryUserStorage implements UserStorage{
         return user;
     }
 
-    public Integer addFriend(Integer id, Integer friendId){
+    public User addFriend(Long id, Long friendId){
         identifyUserId(friendId);
         identifyUserId(id);
-        users.get(id).addFriend(friendId);
-        users.get(friendId).addFriend(id);
-        return friendId;
+        users.get(id).addFriend(users.get(friendId));
+        users.get(friendId).addFriend(users.get(id));
+        return users.get(friendId);
     }
 
-    public Integer removeFriend(Integer id, Integer friendId){
+    public Long removeFriend(Long id, Long friendId){
         identifyUserId(friendId);
         identifyUserId(id);
         users.get(id).removeFriend(friendId);
@@ -59,18 +56,18 @@ public class InMemoryUserStorage implements UserStorage{
         return friendId;
     }
 
-    public List<Integer> getFriendList(Integer userId){
+    public List<Long> getFriendList(Long userId){
         identifyUserId(userId);
         return users.get(userId).getFriendList();
     }
 
-    public User getUserById(Integer id){
+    public User getUserById(Long id){
         identifyUserId(id);
         return users.get(id);
     }
 
     @Override
-    public List<Integer> getCommonFriends(Integer id, Integer otherId) {
+    public List<Long> getCommonFriends(Long id, Long otherId) {
         identifyUserId(id);
         identifyUserId(otherId);
         return users.get(id)
@@ -121,14 +118,14 @@ public class InMemoryUserStorage implements UserStorage{
         if (!isIdentified) throw new UserIdentificationException("User with ID " + user.getId() + " is not found");
     }
 
-    private void identifyUserId(Integer id){
+    private void identifyUserId(Long id){
         boolean isIdentified = users.containsKey(id);
         log.info("User identification by ID: "+isIdentified);
         if (!isIdentified) throw new UserIdentificationException("User with ID " + id + " is not found");
     }
 
     private void validateUserId(User user){
-        Integer userId = user.getId();
+        Long userId = user.getId();
         boolean isValid= !userId.equals(null)
                 && userId > 0;
         if (!isValid) throw new UserIDValidationException("User ID is not correct");

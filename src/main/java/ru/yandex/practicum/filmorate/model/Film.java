@@ -14,9 +14,9 @@ import java.util.Set;
 @Data
 public class Film {
 
-    private int id;
+    private long id;
 
-    private Set<Integer> usersWhoLiked = new HashSet<>();
+    private Set<Long> usersWhoLiked = new HashSet<>();
 
     @NotBlank
     private String name;
@@ -30,14 +30,14 @@ public class Film {
     @Positive
     private long duration;
 
-    public Integer like(Integer userId) {
+    public Long like(Long userId) {
         usersWhoLiked.add(userId);
-        return usersWhoLiked.size();
+        return userId;
     }
 
-    public Integer unlike(Integer userId) {
+    public Long unlike(Long userId) {
         usersWhoLiked.remove(userId);
-        return usersWhoLiked.size();
+        return userId;
     }
 
     public Integer getLikesCount(){

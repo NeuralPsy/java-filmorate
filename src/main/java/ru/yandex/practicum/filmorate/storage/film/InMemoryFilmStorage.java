@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,13 +11,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
 
-    private Map<Integer, Film> films = new HashMap<>();
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+    private Map<Long, Film> films = new HashMap<>();
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static int id = 1;
 
@@ -27,7 +27,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film add(Film film){
+    public Film addFilm(Film film){
         log.info("Creating film {}", film.getName());
         validateFilmToCreate(film);
         film.setId(id++);
@@ -36,7 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Integer remove(Integer filmId) {
+    public Long remove(Long filmId) {
         identifyById(filmId);
         films.remove(filmId);
         return filmId;
@@ -51,21 +51,23 @@ public class InMemoryFilmStorage implements FilmStorage{
     }
 
     @Override
-    public Film getById(Integer filmId){
+    public Film getById(Long filmId){
         identifyById(filmId);
         return films.get(filmId);
     }
 
     @Override
-    public Integer likeFilm(Integer filmId, Integer userId){
+    public Integer likeFilm(Long filmId, Long userId){
         identifyById(filmId);
-        return films.get(filmId).like(userId);
+        films.get(filmId).like(userId);
+        return films.get(filmId).getLikesCount();
     }
 
     @Override
-    public Integer unlikeFilm(Integer filmId, Integer userId){
+    public Integer unlikeFilm(Long filmId, Long userId){
         identifyById(filmId);
-        return films.get(filmId).unlike(userId);
+        films.get(filmId).unlike(userId);
+        return films.get(filmId).getLikesCount();
     }
 
     private void validateFilmToCreate(Film film) {
@@ -112,7 +114,7 @@ public class InMemoryFilmStorage implements FilmStorage{
         if (!isValid) throw new FilmNameValidationException("Film name cannot be empty");
     }
 
-    private void identifyById(Integer id){
+    public void identifyById(Long id){
         boolean isValid = films.containsKey(id);
         log.info("Film identification by ID: {}", isValid);
         if (!isValid) throw new FilmIdentificationException("Film with ID " + id + " is not found");

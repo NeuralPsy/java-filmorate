@@ -22,34 +22,36 @@ public class FilmService {
     }
 
     public Film addFilm(Film film){
-        return storage.add(film);
+        return storage.addFilm(film);
     }
 
     public Film updateFilm(Film film){
         return storage.update(film);
     }
 
-    public Integer removeFilm(Integer filmId){
+    public Long removeFilm(Long filmId){
         return storage.remove(filmId);
     }
 
-    public Film getFilm(Integer filmId){
+    public Film getFilm(Long filmId){
         return storage.getById(filmId);
     }
 
-    public Integer likeFilm(Integer filmId, Integer userId){
-        return storage.likeFilm(filmId, userId);
+    public Integer likeFilm(Long filmId, Long userId){
+        storage.likeFilm(filmId, userId);
+        return storage.getById(filmId).getLikesCount();
     }
 
-    public Integer unlikeFilm(Integer filmId, Integer userId) {
+    public Integer unlikeFilm(Long filmId, Long userId) {
         return storage.unlikeFilm(filmId, userId);
     }
 
     public List<Film> showTopFilms(Integer count) {
-        return storage.findAll().stream()
-                .sorted((post1, post2) -> {
-                    int comp = post1.getLikesCount().compareTo(post2.getLikesCount());
-                    return comp;
-                }).limit(count).collect(Collectors.toList());
+            return storage.findAll()
+                    .stream()
+//                    .filter(film -> film.getLikesCount() > 0)
+                    .sorted((post1, post2) -> post1.getLikesCount().compareTo(post2.getLikesCount()))
+                    .limit(count)
+                    .collect(Collectors.toList());
     }
 }

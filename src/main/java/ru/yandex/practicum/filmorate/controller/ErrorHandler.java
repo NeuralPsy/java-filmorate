@@ -31,4 +31,6 @@ public class ErrorHandler {
     public ErrorResponse handleOtherExceptions(final Throwable e){
         return new ErrorResponse(e.getMessage());
     }
+
+
 }
