@@ -1,31 +1,20 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/films")
 public class FilmController {
 
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
-
     private static int id = 1;
 
     private final FilmService filmService;
-
 
     @Autowired
     public FilmController(FilmService filmService) {

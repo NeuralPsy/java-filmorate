@@ -1,12 +1,8 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jdk.jfr.DataAmount;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 import java.util.*;
 
 @Data
