@@ -32,6 +32,7 @@ public class Film {
 
     @JsonIgnore
     private int likesCount = 0;
+
     public Long like(Long userId) {
         usersWhoLiked.add(userId);
         likesCount = usersWhoLiked.size();
@@ -40,10 +41,11 @@ public class Film {
 
     public Long unlike(Long userId) {
         usersWhoLiked.remove(userId);
+        likesCount = usersWhoLiked.size();
         return userId;
     }
 
     public Integer getLikesCount(){
-        return usersWhoLiked.size();
+        return likesCount;
     }
 }

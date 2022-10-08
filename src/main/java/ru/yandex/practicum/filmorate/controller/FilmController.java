@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 /**
- * FilmController is class that allows to send API requests.
+ * FilmController is class that allows to send API requests to do realize FilmService methods.
  */
 @RestController
 @RequestMapping(value = "/films")
@@ -17,13 +17,17 @@ public class FilmController {
 
     private final FilmService filmService;
 
+    /** FilmController constructor
+     * @param filmService is FilmService object that needs to be entered as an argument
+     *                    to initialize filmService field
+     */
     @Autowired
     public FilmController(FilmService filmService) {
         this.filmService = filmService;
     }
 
     /**
-     * @return list of all existing films in storage
+     * @return list of all existing films in storage as Film class objects
      */
     @GetMapping
     public List<Film> findAll(){
@@ -31,6 +35,7 @@ public class FilmController {
     }
 
     /**
+     * Method adds film into film storage
      * @param film is object of Film class sent from frontend part of application.
      *             The object should have right format therefore it needs to be validated.
      *             If one of object properties is invalid, an exception is thrown
@@ -42,7 +47,7 @@ public class FilmController {
     }
 
     /**
-     * Method adds film into film storage
+     * Method updates film that is already in film storage
      * @param film is object of Film class sent from frontend part of application.
      *             The object should have right format therefore it needs to be validated.
      *             If one of object properties is invalid, an exception is thrown
@@ -55,7 +60,7 @@ public class FilmController {
     }
 
     /**
-     * Method updates film that is already in film storage
+     * Method removes film from film storage by its ID
      * @param filmId is object of Long class sent from path line as a path variable.
      *             The object should needs to be validated.
      *             If there's no film that has this ID, an exception is thrown
@@ -68,7 +73,7 @@ public class FilmController {
     }
 
     /**
-     * Method removes film by its ID from film storage
+     * Method returns film by its ID from film storage
      * @param filmId is object of Long class sent from path line as a path variable.
      *             The object should be validated.
      *             If there's no film that has this ID, an exception is thrown
@@ -81,6 +86,7 @@ public class FilmController {
 
 
     /**
+     * Method allows user to like film
      * @param filmId is object of Long class sent from path line as a path variable.
      *      *             The object should be validated.
      *      *             If there's no film that has this ID, an exception is thrown
@@ -95,6 +101,7 @@ public class FilmController {
     }
 
     /**
+     * Method allows user to unlike film
      * @param filmId is object of Long class sent from path line as a path variable.
      *      *             The object should be validated.
      *      *             If there's no film that has this ID, an exception is thrown
@@ -110,9 +117,11 @@ public class FilmController {
     }
 
     /**
+     * Method allows getting top films according to number of likes
      * @param count is value entered from path line as a request parameter. The parameter is not required.
      *              If it is not in path line the default value is set as 10
-     * @return list of Film class objects is returned
+     * @return list of Film class objects is returned.
+     * Number of films is list equals "count" request parameter
      */
     @GetMapping("/popular")
     public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
