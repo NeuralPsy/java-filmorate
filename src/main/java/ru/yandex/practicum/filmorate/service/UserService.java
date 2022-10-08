@@ -83,7 +83,7 @@ public class UserService {
     /**
      * @param id user ID entered from getCommonFriends(Long id, Long userId) method of UserController class
      * @param otherId user ID entered from getCommonFriends(Long id, Long userId) method of UserController class
-     *                whose common friends user need to get
+     *                whose common friends user needs to get
      * @return list of User class objects
      */
     public List<User> getCommonFriends(Long id, Long otherId) {
