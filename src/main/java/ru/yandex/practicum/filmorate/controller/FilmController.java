@@ -12,8 +12,6 @@ import java.util.List;
 @RequestMapping(value = "/films")
 public class FilmController {
 
-    private static int id = 1;
-
     private final FilmService filmService;
 
     @Autowired

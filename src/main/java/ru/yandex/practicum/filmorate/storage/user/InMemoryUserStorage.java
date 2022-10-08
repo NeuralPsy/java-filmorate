@@ -17,7 +17,7 @@ public class InMemoryUserStorage implements UserStorage{
     private Map<Long, User> users = new HashMap<>();
 
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
-    private static long userId = 1;
+    private static long idToAdd = 1;
 
     public List<User> getAllUsers(){
         return new ArrayList<>(users.values());
@@ -25,7 +25,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     public User addUser(User user){
         validateUserToCreate(user);
-        user.setId(userId++);
+        user.setId(idToAdd++);
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
         log.info("Creating user with ID: " + user.getId());
         users.put(user.getId(), user);
@@ -126,7 +126,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     private void validateUserId(User user){
         Long userId = user.getId();
-        boolean isValid= !userId.equals(null)
+        boolean isValid = userId != null
                 && userId > 0;
         if (!isValid) throw new UserIDValidationException("User ID is not correct");
     }
