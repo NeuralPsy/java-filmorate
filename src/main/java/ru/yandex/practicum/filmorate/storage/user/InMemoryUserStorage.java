@@ -131,11 +131,5 @@ public class InMemoryUserStorage implements UserStorage{
         if (!isValid) throw new UserIDValidationException("User ID is not correct");
     }
 
-    private void validateIdValueFormat(Integer userId) {
-        boolean isValid = userId > 0;
-        if (!isValid) throw new UserIDValidationException("Wrong user ID value");
-    }
-
-
 
 }
