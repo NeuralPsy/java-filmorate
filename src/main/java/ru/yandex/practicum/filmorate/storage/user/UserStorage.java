@@ -4,6 +4,9 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 
+/**
+ * Interface to work with storage of User class objects
+ */
 public interface UserStorage {
     List<User> getAllUsers();
 

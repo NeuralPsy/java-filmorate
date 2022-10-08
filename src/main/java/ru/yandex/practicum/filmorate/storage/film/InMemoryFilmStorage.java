@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.*;
+import ru.yandex.practicum.filmorate.exception.film.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -12,19 +12,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The class implements FilmStorage interface to work with Film class objects in storage
+ */
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage{
 
     private Map<Long, Film> films = new HashMap<>();
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static int id = 1;
 
+    /**
+     * @return list of all existing films in storage as Film class objects as it requested via FilmController class
+     */
     public List<Film> findAll(){
         return new ArrayList<>(films.values());
     }
 
+    /**
+     * @param film is object of Film class sent from create(Film film) method of FilmController class
+     *             and put into add(Film film) method of FilmService class
+     *             The object should have right format therefore it needs to be validated.
+     *             If one of object properties is invalid, an exception is thrown
+     * @exception DescriptionValidationException
+     * @exception FilmDurationValidationException
+     * @exception FilmIdentificationException
+     * @exception FilmNameValidationException
+     * @exception ReleaseDateValidationException
+     * @return film object if its validated and no exception were thrown
+     */
     @Override
     public Film addFilm(Film film){
         log.info("Creating film {}", film.getName());
@@ -34,6 +52,12 @@ public class InMemoryFilmStorage implements FilmStorage{
         return film;
     }
 
+    /**
+     * @param filmId is an ID of a film sent from remove(Long filmId) method of FilmController class
+     *               and put into removeFilm(Long filmId) method of FilmService class as parameter
+     * @exception FilmIdentificationException
+     * @return the ID of film if its validated and exception was not thrown
+     */
     @Override
     public Long remove(Long filmId) {
         identifyById(filmId);
@@ -41,6 +65,17 @@ public class InMemoryFilmStorage implements FilmStorage{
         return filmId;
     }
 
+    /**
+     * @param film is object of Film class sent from update(Film film) method of FilmController class
+     *                  The object should have right format therefore it needs to be validated.
+     *                  If one of object properties is invalid, an exception is thrown
+     * @exception DescriptionValidationException
+     * @exception FilmDurationValidationException
+     * @exception FilmIdentificationException
+     * @exception FilmNameValidationException
+     * @exception ReleaseDateValidationException
+     * @return the ID of film if its validated and exception was not thrown
+     */
     @Override
     public Film update(Film film){
         log.info("Updating film {}", film.getName());
@@ -49,12 +84,26 @@ public class InMemoryFilmStorage implements FilmStorage{
         return film;
     }
 
+    /**
+     * @param filmId is an ID of a film sent from getFilm(Long filmId) method of FilmController class
+     *               and put into getFilm(Long filmId) as argument of FilmService class
+     * @exception FilmIdentificationException
+     * @return the ID of film if its validated and no exception was thrown
+     */
     @Override
     public Film getById(Long filmId){
         identifyById(filmId);
         return films.get(filmId);
     }
 
+    /**
+     * @param filmId is an ID of a film sent from likeFilm(Long filmId, Long userId) method of FilmController class
+     *               and put into likeFilm(Long filmId, Long userId) method as argument of FilmService class
+     * @param userId is an ID of a user sent from likeFilm(Long filmId, Long userId) method of FilmController class
+     *               and put into likeFilm(Long filmId, Long userId) method as argument of FilmService class
+     * @exception FilmIdentificationException
+     * @return count of film likes is returned
+     */
     @Override
     public Integer likeFilm(Long filmId, Long userId){
         identifyById(filmId);
@@ -62,17 +111,27 @@ public class InMemoryFilmStorage implements FilmStorage{
         return films.get(filmId).getLikesCount();
     }
 
+    /**
+     * @param filmId filmId is an ID of a film sent from unlikeFilm(Long filmId, Long userId) method of
+     *               FilmController class and put into unlikeFilm(Long filmId, Long userId) method as argument
+     *               of FilmService class
+     * @param userId is an ID of a user sent from unlikeFilm(Long filmId, Long userId) method of FilmController class
+     *               and put into unlikeFilm(Long filmId, Long userId) method as argument of FilmService class
+     * @exception FilmIdentificationException
+     * @exception NotPossibleToUnlikeFilmException
+     * @return count of film likes is returned
+     */
     @Override
     public Integer unlikeFilm(Long filmId, Long userId){
         identifyById(filmId);
-        identifyUserbyIdInFilm(filmId, userId);
+        identifyUserByIdInFilm(filmId, userId);
         films.get(filmId).unlike(userId);
         return films.get(filmId).getLikesCount();
     }
 
-    private void identifyUserbyIdInFilm(Long filmId, Long userId) {
+    private void identifyUserByIdInFilm(Long filmId, Long userId) {
         boolean isValid = films.get(filmId).getUsersWhoLiked().contains(userId);
-        if(!isValid) throw new NotPossibleToUnlikeFilm("User with ID "
+        if(!isValid) throw new NotPossibleToUnlikeFilmException("User with ID "
                 + userId + " didn't like the film. It is not possible to unlike");
     }
 

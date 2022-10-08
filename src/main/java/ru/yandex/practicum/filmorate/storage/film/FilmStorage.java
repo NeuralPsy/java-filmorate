@@ -4,6 +4,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 
+/**
+ * Interface to work with storage of Film class objects
+ */
 public interface FilmStorage {
 
     Film addFilm(Film film);
