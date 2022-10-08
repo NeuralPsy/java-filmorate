@@ -39,7 +39,7 @@ public class FilmController {
      * @param film is object of Film class sent from frontend part of application.
      *             The object should have right format therefore it needs to be validated.
      *             If one of object properties is invalid, an exception is thrown
-     * @return film object if its validated and no exception was thrown
+     * @return film object if its validated and no exception were thrown
      */
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
@@ -62,7 +62,7 @@ public class FilmController {
     /**
      * Method removes film from film storage by its ID
      * @param filmId is object of Long class sent from path line as a path variable.
-     *             The object should needs to be validated.
+     *             The ID should be validated.
      *             If there's no film that has this ID, an exception is thrown
      * @return the ID of film if its validated and exception was not thrown
      */
@@ -77,7 +77,7 @@ public class FilmController {
      * @param filmId is object of Long class sent from path line as a path variable.
      *             The object should be validated.
      *             If there's no film that has this ID, an exception is thrown
-     * @return the ID of film if its validated and exception was not thrown
+     * @return the ID of film if its validated and no exception was thrown
      */
     @GetMapping("/{filmId}")
     public Film getFilm(@PathVariable Long filmId){

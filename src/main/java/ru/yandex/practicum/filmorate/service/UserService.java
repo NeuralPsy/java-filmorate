@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * UserController is class that allows work with API requests to realize UserStorage methods.
+ * UserService is class that allows work with API requests (processed by FilmController)
+ * to realize UserStorage methods.
  */
 @Service
 public class UserService {
