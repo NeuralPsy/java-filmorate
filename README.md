@@ -1,2 +1,2 @@
-# java-filmorate
-Template repository for Filmorate project.
+# FilmRate
+Web-Service for movies and TV-shows access
