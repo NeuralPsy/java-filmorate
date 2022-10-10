@@ -1,96 +1,130 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * FilmController is class that allows to send API requests to do realize FilmService methods.
+ */
 @RestController
 @RequestMapping(value = "/films")
-@Slf4j
 public class FilmController {
 
-    private Map<Integer, Film> films = new HashMap<>();
+    private final FilmService filmService;
 
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+    /** FilmController constructor
+     * @param filmService is FilmService object that needs to be entered as an argument
+     *                    to initialize filmService field
+     */
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
-    private static int id = 1;
-
+    /**
+     * @return list of all existing films in storage as Film class objects
+     */
     @GetMapping
     public List<Film> findAll(){
-        return new ArrayList<>(films.values());
+        return filmService.findAll();
     }
 
+    /**
+     * Method adds film into film storage
+     * @param film is object of Film class sent from frontend part of application.
+     *             The object should have right format therefore it needs to be validated.
+     *             If one of object properties is invalid, an exception is thrown
+     * @return film object if its validated and no exception were thrown
+     */
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        log.info("Creating film {}", film.getName());
-        validateFilmToCreate(film);
-        film.setId(id++);
-        films.put(film.getId(), film);
-        return film;
+        return filmService.addFilm(film);
     }
+
+    /**
+     * Method updates film that is already in film storage
+     * @param film is object of Film class sent from frontend part of application.
+     *             The object should have right format therefore it needs to be validated.
+     *             If one of object properties is invalid, an exception is thrown
+     * @return film object if its validated and no exception was thrown
+     */
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        log.info("Updating film {}", film.getName());
-        validateFilmToUpdate(film);
-        films.put(film.getId(), film);
-        return film;
+        return filmService.updateFilm(film);
     }
 
-    private void validateFilmToCreate(Film film) {
-        validateReleaseDate(film);
-        validateDescription(film);
-        validateDuration(film);
-        validateName(film);
+    /**
+     * Method removes film from film storage by its ID
+     * @param filmId is object of Long class sent from path line as a path variable.
+     *             The ID should be validated.
+     *             If there's no film that has this ID, an exception is thrown
+     * @return the ID of film if its validated and exception was not thrown
+     */
 
+    @DeleteMapping("/{filmId}")
+    public Long remove(@PathVariable Long filmId){
+        return filmService.removeFilm(filmId);
+    }
+
+    /**
+     * Method returns film by its ID from film storage
+     * @param filmId is object of Long class sent from path line as a path variable.
+     *             The object should be validated.
+     *             If there's no film that has this ID, an exception is thrown
+     * @return the ID of film if its validated and no exception was thrown
+     */
+    @GetMapping("/{filmId}")
+    public Film getFilm(@PathVariable Long filmId){
+        return filmService.getFilm(filmId);
     }
 
 
-
-    private void validateFilmToUpdate(Film film) {
-
-        validateReleaseDate(film);
-        validateDescription(film);
-        validateDuration(film);
-        identifyFilm(film);
+    /**
+     * Method allows user to like film
+     * @param filmId is object of Long class sent from path line as a path variable.
+     *      *             The object should be validated.
+     *      *             If there's no film that has this ID, an exception is thrown
+     * @param userId is object of Long class sent from path line as a path variable.
+     *      *             The object should be validated.
+     *      *             If there's no user that has this ID, an exception is thrown
+     * @return count of film likes is returned
+     */
+    @PutMapping("/{filmId}/like/{userId}")
+    public Integer likeFilm(@PathVariable Long filmId, @PathVariable Long userId){
+        return filmService.likeFilm(filmId, userId);
     }
 
-    private void validateDuration(Film film) {
-        log.info("Duration validation: {}", film.getDuration() < 0);
-        if (film.getDuration() < 0) throw new FilmDurationValidationException("Duration value should be positive");
+    /**
+     * Method allows user to unlike film
+     * @param filmId is object of Long class sent from path line as a path variable.
+     *      *             The object should be validated.
+     *      *             If there's no film that has this ID, an exception is thrown
+     * @param userId is object of Long class sent from path line as a path variable.
+     *      *             The object should be validated.
+     *      *             If there's no user that has this ID, an exception is thrown
+     * @return count of film likes is returned
+     */
+
+    @DeleteMapping("/{filmId}/like/{userId}")
+    public Integer unlikeFilm(@PathVariable Long filmId, @PathVariable Long userId){
+        return filmService.unlikeFilm(filmId, userId);
     }
 
-    private void validateReleaseDate(Film film){
-        boolean isReleaseDateValid = LocalDate.parse(film.getReleaseDate(), formatter)
-                .isAfter(LocalDate.of(1895, 12, 28));
-        log.info("Release date validation: {}", isReleaseDateValid);
-        if (!isReleaseDateValid) throw new ReleaseDateValidationException("Film release date should not be earlier " +
-                "than December 28th of 1895");
-    }
-
-    private void validateDescription(Film film){
-        if (film.getDescription().length() > 200)
-            throw new DescriptionValidationException("Film description should not be more than 200 symbols");
-    }
-
-    private void identifyFilm(Film film){
-        boolean isValid = films.containsKey(film.getId());
-        log.info("Film identification: {}", isValid);
-        if (!isValid) throw new FilmIdentificationException("Film with ID " + film.getId() + " is not found");
-    }
-
-    private void validateName(Film film){
-        boolean isValid = !film.getName().isEmpty() && !film.getName().isBlank();
-        if (!isValid) throw new FilmNameValidationException("Film name cannot be empty");
+    /**
+     * Method allows getting top films according to number of likes
+     * @param count is value entered from path line as a request parameter. The parameter is not required.
+     *              If it is not in path line the default value is set as 10
+     * @return list of Film class objects is returned.
+     * Number of films is list equals "count" request parameter
+     */
+    @GetMapping("/popular")
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
+        return filmService.showTopFilms(count);
     }
 }

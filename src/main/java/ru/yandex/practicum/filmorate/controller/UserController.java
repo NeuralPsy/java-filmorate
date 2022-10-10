@@ -1,100 +1,99 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * UserController is class that allows to send API requests to realize UserService methods.
+ */
 @RestController
 @RequestMapping(value = "/users")
 @Slf4j
 public class UserController {
+    private final UserService userService;
 
-    private Map<Integer, User> users = new HashMap<>();
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+    /**
+     * @param userService is UserService object that needs to be entered as an argument
+     *                    to initialize userService field
+     */
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
-    private static int userId = 1;
-
+    /**
+     * @return list of all existing users in storage as User class objects
+     */
     @GetMapping
     public List<User> findAll(){
-        return new ArrayList<>(users.values());
+        return userService.findAll();
     }
 
+    /**
+     * @param user is User class object that is needed to be added in user storage
+     * @return user if its validated and no exceptions are thrown
+     */
     @PostMapping
-    public User create(@Valid @RequestBody User user) throws LoginValidationException, EmailValidationException,
-            BirthDayValidationException{
-        validateUserToCreate(user);
-        user.setId(userId++);
-        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
-        log.info("Creating user with ID: " + user.getId());
-        users.put(user.getId(), user);
-
-        return user;
+    public User create(@Valid @RequestBody User user) {
+        return userService.addUser(user);
     }
 
+    /**
+     * @param user is User class object that is already in user storage and its needed to be updated
+     * @return user if its validated and no exceptions are thrown
+     */
     @PutMapping
-    public User update(@Valid @RequestBody User user) throws LoginValidationException, EmailValidationException,
-            BirthDayValidationException, UserIdentificationException, UserIDValidationException{
-        log.info(user.getEmail() + " updating");
-        validateUserToUpdate(user);
-        if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
-        users.put(user.getId(), user);
-        return user;
+    public User update(@Valid @RequestBody User user){
+        return userService.updateUser(user);
     }
 
-    private void validateUserToCreate(User user) {
-         validateLogin(user);
-         validateEmail(user);
-         validateBirthday(user);
+    /**
+     * @param id is path variable representing user ID
+     * @param friendId is path variable representing user friend's ID
+     * @return ID of an added friend into friend list
+     */
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriend(@PathVariable Long id, @PathVariable Long friendId){
+        return userService.addFriend(id, friendId);
     }
 
-    private void validateUserToUpdate(User user) {
-        identifyUser(user);
-        validateLogin(user);
-        validateEmail(user);
-        validateBirthday(user);
-        validateUserId(user);
+    /**
+     * @param id is path variable representing user ID
+     * @param friendId is path variable representing user friend's ID
+     * @return ID of a friend who was removed from friend list
+     */
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public Long removeFriend(@PathVariable Long id, @PathVariable Long friendId){
+        return userService.removeFriend(id, friendId);
     }
 
-    private void validateEmail(User user) {
-        boolean isValid = user.getEmail().contains("@")
-                && user.getEmail().contains(".")
-                && !user.getEmail().contains(" ");
-        log.info("Email validation: {}", isValid);
-        if (!isValid) throw new EmailValidationException("Email is not correct");
+    @GetMapping("/{id}/friends")
+    public List<User> getFriendList(@PathVariable Long id){
+        return userService.getFriendList(id);
     }
 
-    private void validateLogin(User user){
-        boolean isCorrectLogin = !user.getLogin().isBlank() && !user.getLogin().contains(" ");
-        log.info("Login validation: {}", isCorrectLogin);
-        if (!isCorrectLogin) throw new LoginValidationException("Login should not be empty or contain spaces");
+    /**
+     * @param id is path variable representing user ID
+     * @param otherId is path variable representing other user ID whose common friends user need to get
+     * @return list of User class objects
+     */
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId){
+        return userService.getCommonFriends(id, otherId);
     }
 
-    private void validateBirthday(User user){
-        boolean isCorrectBirthday = LocalDate.parse(user.getBirthday(), formatter).isBefore(LocalDate.now());
-        log.info("Birthday validation: {}", user.getBirthday());
-        if (!isCorrectBirthday) throw new BirthDayValidationException("Birthday cannot be after current date");
+    /**
+     * @param id is path variable representing user ID
+     * @return User class object, if user of this ID exists in user storages
+     */
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable Long id){
+        return userService.getUser(id);
     }
-
-    private void identifyUser(User user){
-        boolean isIdentified = users.containsKey(user.getId());
-        log.info("User identification: "+isIdentified);
-        if (!isIdentified) throw new UserIdentificationException("User with ID " + user.getId() + " is not found");
-    }
-
-    private void validateUserId(User user){
-        Integer userId = user.getId();
-        boolean isValid= !userId.equals(null)
-                && userId > 0;
-        if (!isValid) throw new UserIDValidationException("User ID is not correct");
-    }
-
 }

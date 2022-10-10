@@ -3,17 +3,16 @@ package ru.yandex.practicum.filmorate.controller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.DescriptionValidationException;
-import ru.yandex.practicum.filmorate.exception.FilmDurationValidationException;
-import ru.yandex.practicum.filmorate.exception.FilmNameValidationException;
-import ru.yandex.practicum.filmorate.exception.ReleaseDateValidationException;
+import ru.yandex.practicum.filmorate.exception.film.DescriptionValidationException;
+import ru.yandex.practicum.filmorate.exception.film.FilmDurationValidationException;
+import ru.yandex.practicum.filmorate.exception.film.FilmNameValidationException;
+import ru.yandex.practicum.filmorate.exception.film.ReleaseDateValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
-import static org.junit.jupiter.api.Assertions.*;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 class FilmControllerTest {
-
-    private  FilmController filmController = new FilmController();
+    private  FilmController filmController = new FilmController(new FilmService(new InMemoryFilmStorage()));
 
     private Film film;
 

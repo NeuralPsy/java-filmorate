@@ -1,19 +1,20 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.BirthDayValidationException;
-import ru.yandex.practicum.filmorate.exception.EmailValidationException;
-import ru.yandex.practicum.filmorate.exception.LoginValidationException;
+import ru.yandex.practicum.filmorate.exception.user.BirthDayValidationException;
+import ru.yandex.practicum.filmorate.exception.user.EmailValidationException;
+import ru.yandex.practicum.filmorate.exception.user.LoginValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
 
-    private UserController userController = new UserController();
+    private UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
     private User user;
 
     @BeforeEach
