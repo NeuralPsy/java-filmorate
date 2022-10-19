@@ -2,7 +2,7 @@
 Web-Service for movies and TV-shows access
 
 ## Database diagram
-<img src="FIlmoRateDBD.drawio.png" alt="drawing" width="80%"/>
+<img src="FIlmoRateDBD.drawio-2.png" alt="drawing" width="80%"/>
 
 ### SQL requests examples
 **Get all films**
