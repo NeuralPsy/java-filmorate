@@ -17,9 +17,10 @@ Web-Service for movies and TV-shows access
     
 **Get top 10 films**
 
-    SELECT name
-    FROM films
-    ORDER BY likes_cout DESC
+    SELECT f.name, COUNT(lf.film_id) AS likes_count
+    FROM films AS f
+    LEFT JOIN liked_films as lf ON lf.film_id=films.film_id
+    ORDER BY likes_count DESC
     LIMIT 10;
 
 **Get friend list**
