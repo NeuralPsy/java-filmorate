@@ -60,7 +60,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void createFilmWithLondDescription(){
+    void createFilmWithLongDescription(){
         film.setDuration(-1);
         film.setReleaseDate("2020-12-28");
         film.setName("Spawn");
