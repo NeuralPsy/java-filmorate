@@ -30,8 +30,7 @@ public class FIlmDbStorage implements FilmStorage{
                 "values ("+id+", "+name+", "+description+", " +
                 ""+releaseDate+", "+duration+", "+mpaRating+", "+lastUpdate+");";
 
-        jdbcTemplate.execute(sql);
-
+        jdbcTemplate.update(sql);
         return film;
     }
 
