@@ -20,6 +20,8 @@ public class User {
     @NotNull
     String birthday;
 
+    String lastUpdate;
+
     private Set<Integer> likedMovies = new HashSet<>();
 
     private List<Long> friends = new ArrayList<>();

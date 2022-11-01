@@ -33,6 +33,10 @@ public class Film {
     @JsonIgnore
     private int likesCount = 0;
 
+    private int mpaRating;
+
+    private String lastUpdate;
+
     public Long like(Long userId) {
         usersWhoLiked.add(userId);
         likesCount = usersWhoLiked.size();

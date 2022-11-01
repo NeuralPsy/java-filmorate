@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * The class implements UserStorage interface to work with Film class objects in storage
  */
 @Slf4j
-@Component
+@Component("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage{
 
     private Map<Long, User> users = new HashMap<>();

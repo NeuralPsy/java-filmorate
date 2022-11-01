@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class FilmService {
+
     private final FilmStorage storage;
 
     /**
@@ -21,7 +23,7 @@ public class FilmService {
      *                to initialize storage field
      */
     @Autowired
-    public FilmService(FilmStorage storage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage storage) {
         this.storage = storage;
     }
 

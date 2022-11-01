@@ -16,7 +16,7 @@ import java.util.Map;
  * The class implements FilmStorage interface to work with Film class objects in storage
  */
 @Slf4j
-@Component
+@Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage{
 
     private Map<Long, Film> films = new HashMap<>();
