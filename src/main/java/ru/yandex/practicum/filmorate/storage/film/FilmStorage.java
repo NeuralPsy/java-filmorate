@@ -22,7 +22,4 @@ public interface FilmStorage {
     Integer likeFilm(Long filmId, Long userId);
 
     Integer unlikeFilm(Long filmId, Long userId);
-
-    void identifyById(Long id);
-
 }

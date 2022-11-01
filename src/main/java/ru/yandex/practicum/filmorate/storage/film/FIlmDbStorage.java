@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -64,8 +63,4 @@ public class FIlmDbStorage implements FilmStorage{
         return null;
     }
 
-    @Override
-    public void identifyById(Long id) {
-
-    }
 }
