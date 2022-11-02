@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.film.FilmIdentificationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -49,21 +53,49 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public Long remove(Long filmId) {
-        return null;
+        String sqlQuery = "delete from films where id = ?";
+        try {
+            jdbcTemplate.update(sqlQuery, filmId);
+        } catch (DataAccessException e){
+            throw new FilmIdentificationException("Film with ID " + filmId + " is not found");
+        }
+
+        return filmId;
     }
 
     @Override
     public Film update(Film film) {
-        return null;
+        String lastUpdate = LocalDate.now().format(formatter);
+        String sqlQuery = "update films set name = ?, release_date = ?, description = ?, duration = ?, " +
+                "mpa_rating = ?, last_update = ? where id = ?;";
+        jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
+                film.getDuration(), film.getMpaRating(), lastUpdate, film.getId());
+
+        return film;
     }
 
     @Override
     public List<Film> findAll() {
-        return null;
+        String sqlQuery = "select * from films;";]
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs));;
+    }
+
+    private Film makeFilm(ResultSet rs) throws SQLException {
+        return Film.builder()
+                .id(rs.getLong("id"))
+                .name(rs.getString("name"))
+                .description(rs.getString("description"))
+                .duration(rs.getLong("duration"))
+                .mpaRating(rs.getInt("mpa_rating"))
+                .releaseDate(rs.getString("release_date"))
+                .lastUpdate(rs.getString("last_update"))
+                .build();
+
     }
 
     @Override
     public Film getById(Long filmId) {
+
         return null;
     }
 
