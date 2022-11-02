@@ -19,7 +19,7 @@ public interface FilmStorage {
 
     Film getById(Long filmId);
 
-    Integer likeFilm(Long filmId, Long userId);
+    boolean likeFilm(Long filmId, Long userId);
 
-    Integer unlikeFilm(Long filmId, Long userId);
+    boolean unlikeFilm(Long filmId, Long userId);
 }

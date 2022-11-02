@@ -109,11 +109,11 @@ public class InMemoryFilmStorage implements FilmStorage{
      * @return count of film likes is returned
      */
     @Override
-    public Integer likeFilm(Long filmId, Long userId){
+    public boolean likeFilm(Long filmId, Long userId){
         this.validation = new MemoryFilmValidation(films);
         validation.identifyById(filmId);
         films.get(filmId).like(userId);
-        return films.get(filmId).getLikesCount();
+        return true;
     }
 
     /**
@@ -127,11 +127,11 @@ public class InMemoryFilmStorage implements FilmStorage{
      * @return count of film likes is returned
      */
     @Override
-    public Integer unlikeFilm(Long filmId, Long userId){
+    public boolean unlikeFilm(Long filmId, Long userId){
         this.validation = new MemoryFilmValidation(films);
         validation.identifyById(filmId);
         validation.identifyUserByIdInFilm(filmId, userId);
         films.get(filmId).unlike(userId);
-        return films.get(filmId).getLikesCount();
+        return true;
     }
 }

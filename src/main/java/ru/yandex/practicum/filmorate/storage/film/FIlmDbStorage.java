@@ -76,7 +76,7 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public List<Film> findAll() {
-        String sqlQuery = "select * from films;";]
+        String sqlQuery = "select * from films;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs));;
     }
 
@@ -100,13 +100,17 @@ public class FIlmDbStorage implements FilmStorage{
     }
 
     @Override
-    public Integer likeFilm(Long filmId, Long userId) {
-        return null;
+    public boolean likeFilm(Long filmId, Long userId) {
+        String sqlQuery = "update liked_films set film_id = ?, user_id = ?;";
+        jdbcTemplate.update(sqlQuery, filmId, userId);
+        return true;
     }
 
     @Override
-    public Integer unlikeFilm(Long filmId, Long userId) {
-        return null;
+    public boolean unlikeFilm(Long filmId, Long userId) {
+        String sqlQuery = "delete from liked_films where film_id = ? and user_id = ?";
+        jdbcTemplate.update(sqlQuery, filmId, userId);
+        return true;
     }
 
 }
