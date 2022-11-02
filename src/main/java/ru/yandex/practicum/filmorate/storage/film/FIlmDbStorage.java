@@ -95,8 +95,8 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public Film getById(Long filmId) {
-
-        return null;
+        String sqlQuery = "select * from films where id = ?;";
+        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
     }
 
     @Override
