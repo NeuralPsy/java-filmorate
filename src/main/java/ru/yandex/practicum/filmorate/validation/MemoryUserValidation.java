@@ -51,7 +51,7 @@ public class MemoryUserValidation implements UserValidation{
     public void validateBirthday(User user){
         boolean isCorrectBirthday = LocalDate.parse(user.getBirthday(), formatter).isBefore(LocalDate.now());
         log.info("Birthday validation: {}", user.getBirthday());
-        if (!isCorrectBirthday) throw new BirthDayValidationException("Birthday cannot be after current date");
+        if (!isCorrectBirthday) throw new BirthDayValidationException("Birthday cannot follow by current date");
     }
 
     public void identifyUser(User user){
@@ -63,7 +63,7 @@ public class MemoryUserValidation implements UserValidation{
     public void identifyUserId(Long id){
         boolean isIdentified = users.containsKey(id);
         log.info("User identification by ID: "+isIdentified);
-        if (!isIdentified) throw new UserIdentificationException("User with ID " + id + " is not found");
+        if (!isIdentified) throw new UserIdentificationException("User ID " + id + " is not found");
     }
 
     public void validateUserId(User user){

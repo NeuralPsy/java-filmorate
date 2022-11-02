@@ -49,7 +49,7 @@ public class FilmService {
      * @param film is object of Film class sent from update(Film film) method of FilmController class
      *                  The object should have right format therefore it needs to be validated.
      *                  If one of object properties is invalid, an exception is thrown
-     * @return film object if its validated and no exception were thrown
+     * @return film object if its validated and no exception was thrown
      */
     public Film updateFilm(Film film){
         return storage.update(film);
