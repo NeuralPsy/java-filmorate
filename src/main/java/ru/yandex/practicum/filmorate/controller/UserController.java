@@ -59,7 +59,7 @@ public class UserController {
      * @return ID of an added friend into friend list
      */
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable Long id, @PathVariable Long friendId){
+    public boolean addFriend(@PathVariable Long id, @PathVariable Long friendId){
         return userService.addFriend(id, friendId);
     }
 
@@ -69,7 +69,7 @@ public class UserController {
      * @return ID of a friend who was removed from friend list
      */
     @DeleteMapping("/{id}/friends/{friendId}")
-    public Long removeFriend(@PathVariable Long id, @PathVariable Long friendId){
+    public boolean removeFriend(@PathVariable Long id, @PathVariable Long friendId){
         return userService.removeFriend(id, friendId);
     }
 

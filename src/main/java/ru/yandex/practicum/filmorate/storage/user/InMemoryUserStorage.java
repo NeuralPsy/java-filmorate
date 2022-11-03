@@ -72,7 +72,7 @@ public class InMemoryUserStorage implements UserStorage{
      *                 and put in addFriend(Long id, Long friendId) method as argument in UserService class
      * @param friendId user ID entered from addFriend(Long id, Long friendId) method of UserController class
      *                 and put in addFriend(Long id, Long friendId) method as argument in UserService class
-     * @return ID of user added list
+     * @return true if friend is added
      * @throws UserIDValidationException may be thrown if any user ID of his potential friends ID is invalid
      */
     public boolean addFriend(Long id, Long friendId){
@@ -81,7 +81,7 @@ public class InMemoryUserStorage implements UserStorage{
         validation.identifyUserId(id);
         users.get(id).addFriend(users.get(friendId));
         users.get(friendId).addFriend(users.get(id));
-        return users.get(friendId);
+        return true;
     }
 
     /**
@@ -89,7 +89,7 @@ public class InMemoryUserStorage implements UserStorage{
      *                 and put in removeFriend(Long id, Long friendId) method as argument in UserService class
      * @param friendId user ID entered from addFriend(Long id, Long friendId) method of UserController class
      *                 and put in addFriend(Long id, Long friendId) method as argument in UserService class
-     * @return ID of user removed from friend list
+     * @return true if friend is removed
      * @throws UserIDValidationException may be thrown if any user ID of his potential friends ID is invalid
      */
     public boolean removeFriend(Long id, Long friendId){
@@ -98,7 +98,7 @@ public class InMemoryUserStorage implements UserStorage{
         validation.identifyUserId(id);
         users.get(id).removeFriend(friendId);
         users.get(friendId).removeFriend(id);
-        return friendId;
+        return true;
     }
 
     /**

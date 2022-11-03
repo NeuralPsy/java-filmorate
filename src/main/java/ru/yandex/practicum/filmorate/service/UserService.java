@@ -56,7 +56,7 @@ public class UserService {
      *                 used with this ID will be added into friend list if its existence in user storage is validated
      * @return ID of user added list
      */
-    public User addFriend(Long id, Long friendId) {
+    public boolean addFriend(Long id, Long friendId) {
         return storage.addFriend(id, friendId);
     }
 
@@ -66,7 +66,7 @@ public class UserService {
      *                 used with this ID will be deleted from friend list if its existence in user storage is validated
      * @return ID of user removed from friend list
      */
-    public Long removeFriend(Long id, Long friendId) {
+    public boolean removeFriend(Long id, Long friendId) {
         return storage.removeFriend(id, friendId);
     }
 
