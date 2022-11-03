@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 import java.util.*;
 
 @Data
@@ -22,7 +23,7 @@ public class User {
     @NotNull
     String birthday;
 
-    String lastUpdate;
+    LocalDate lastUpdate;
 
     private Set<Integer> likedMovies = new HashSet<>();
 

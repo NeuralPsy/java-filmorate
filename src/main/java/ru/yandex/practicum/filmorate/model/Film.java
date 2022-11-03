@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,26 +33,21 @@ public class Film {
     @Positive
     private long duration;
 
-    @JsonIgnore
-    private int likesCount = 0;
-
     private int mpaRating;
 
-    private String lastUpdate;
+    private LocalDate lastUpdate;
 
     public Long like(Long userId) {
         usersWhoLiked.add(userId);
-        likesCount = usersWhoLiked.size();
         return userId;
     }
 
     public Long unlike(Long userId) {
         usersWhoLiked.remove(userId);
-        likesCount = usersWhoLiked.size();
         return userId;
     }
 
     public Integer getLikesCount(){
-        return likesCount;
+        return usersWhoLiked.size();
     }
 }

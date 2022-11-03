@@ -46,7 +46,7 @@ public class FIlmDbStorage implements FilmStorage{
         }, keyHolder);
 
         film.setId(keyHolder.getKey().longValue());
-        film.setLastUpdate(lastUpdate);
+        film.setLastUpdate(LocalDate.parse(lastUpdate, formatter));
 
         return film;
     }
@@ -70,7 +70,7 @@ public class FIlmDbStorage implements FilmStorage{
                 "mpa_rating = ?, last_update = ? where id = ?;";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
                 film.getDuration(), film.getMpaRating(), lastUpdate, film.getId());
-        film.setLastUpdate(lastUpdate);
+        film.setLastUpdate(LocalDate.parse(lastUpdate, formatter));
         return film;
     }
 
@@ -111,7 +111,7 @@ public class FIlmDbStorage implements FilmStorage{
                 .duration(rs.getLong("duration"))
                 .mpaRating(rs.getInt("mpa_rating"))
                 .releaseDate(rs.getString("release_date"))
-                .lastUpdate(rs.getString("last_update"))
+                .lastUpdate(LocalDate.parse(rs.getString("last_update"), formatter))
                 .build();
 
     }

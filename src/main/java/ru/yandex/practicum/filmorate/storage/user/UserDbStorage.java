@@ -49,7 +49,7 @@ public class UserDbStorage implements UserStorage{
         }, keyHolder);
 
         user.setId(keyHolder.getKey().longValue());
-        user.setLastUpdate(lastUpdate);
+        user.setLastUpdate(LocalDate.parse(lastUpdate, formatter));
 
         return user;
     }
@@ -60,7 +60,7 @@ public class UserDbStorage implements UserStorage{
                 "where id = ?;";
         String lastUpdate = LocalDate.now().format(formatter);
         jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), lastUpdate);
-        user.setLastUpdate(lastUpdate);
+        user.setLastUpdate(LocalDate.parse(lastUpdate, formatter));
         return user;
     }
 
@@ -105,7 +105,7 @@ public class UserDbStorage implements UserStorage{
                 .login(rs.getString("login"))
                 .name(rs.getString("name"))
                 .birthday(rs.getString("birthday"))
-                .lastUpdate(rs.getString("last_update"))
+                .lastUpdate(LocalDate.parse(rs.getString("last_update"), formatter))
                 .build();
 
     }
