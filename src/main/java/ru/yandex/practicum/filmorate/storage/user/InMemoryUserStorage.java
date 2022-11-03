@@ -68,14 +68,14 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     /**
-     * @param id user ID entered from addFriend(Long id, Long friendId) method of UserController class
-     *           and put in addFriend(Long id, Long friendId) method as argument in UserService class
+     * @param id       user ID entered from addFriend(Long id, Long friendId) method of UserController class
+     *                 and put in addFriend(Long id, Long friendId) method as argument in UserService class
      * @param friendId user ID entered from addFriend(Long id, Long friendId) method of UserController class
-     *           and put in addFriend(Long id, Long friendId) method as argument in UserService class
-     * @exception UserIDValidationException may be thrown if any user ID of his potential friends ID is invalid
+     *                 and put in addFriend(Long id, Long friendId) method as argument in UserService class
      * @return ID of user added list
+     * @throws UserIDValidationException may be thrown if any user ID of his potential friends ID is invalid
      */
-    public User addFriend(Long id, Long friendId){
+    public boolean addFriend(Long id, Long friendId){
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(friendId);
         validation.identifyUserId(id);
@@ -85,14 +85,14 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     /**
-     * @param id user ID entered from removeFriend(Long id, Long friendId) method of UserController class
-     *           and put in removeFriend(Long id, Long friendId) method as argument in UserService class
+     * @param id       user ID entered from removeFriend(Long id, Long friendId) method of UserController class
+     *                 and put in removeFriend(Long id, Long friendId) method as argument in UserService class
      * @param friendId user ID entered from addFriend(Long id, Long friendId) method of UserController class
-     *           and put in addFriend(Long id, Long friendId) method as argument in UserService class
-     * @exception UserIDValidationException may be thrown if any user ID of his potential friends ID is invalid
+     *                 and put in addFriend(Long id, Long friendId) method as argument in UserService class
      * @return ID of user removed from friend list
+     * @throws UserIDValidationException may be thrown if any user ID of his potential friends ID is invalid
      */
-    public Long removeFriend(Long id, Long friendId){
+    public boolean removeFriend(Long id, Long friendId){
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(friendId);
         validation.identifyUserId(id);

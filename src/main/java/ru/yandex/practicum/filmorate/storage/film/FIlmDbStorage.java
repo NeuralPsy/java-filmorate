@@ -70,15 +70,38 @@ public class FIlmDbStorage implements FilmStorage{
                 "mpa_rating = ?, last_update = ? where id = ?;";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
                 film.getDuration(), film.getMpaRating(), lastUpdate, film.getId());
-
+        film.setLastUpdate(lastUpdate);
         return film;
     }
 
     @Override
     public List<Film> findAll() {
         String sqlQuery = "select * from films;";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs));;
+        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs));
     }
+
+
+    @Override
+    public Film getById(Long filmId) {
+        String sqlQuery = "select * from films where id = ?;";
+        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
+    }
+
+    @Override
+    public boolean likeFilm(Long filmId, Long userId) {
+        String lastUpdate = LocalDate.now().format(formatter);
+        String sqlQuery = "update liked_films set film_id = ?, user_id = ?, last_update = ?;";
+        jdbcTemplate.update(sqlQuery, filmId, userId, lastUpdate);
+        return true;
+    }
+
+    @Override
+    public boolean unlikeFilm(Long filmId, Long userId) {
+        String sqlQuery = "delete from liked_films where film_id = ? and user_id = ?";
+        jdbcTemplate.update(sqlQuery, filmId, userId);
+        return true;
+    }
+
 
     private Film makeFilm(ResultSet rs) throws SQLException {
         return Film.builder()
@@ -91,26 +114,6 @@ public class FIlmDbStorage implements FilmStorage{
                 .lastUpdate(rs.getString("last_update"))
                 .build();
 
-    }
-
-    @Override
-    public Film getById(Long filmId) {
-        String sqlQuery = "select * from films where id = ?;";
-        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
-    }
-
-    @Override
-    public boolean likeFilm(Long filmId, Long userId) {
-        String sqlQuery = "update liked_films set film_id = ?, user_id = ?;";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
-        return true;
-    }
-
-    @Override
-    public boolean unlikeFilm(Long filmId, Long userId) {
-        String sqlQuery = "delete from liked_films where film_id = ? and user_id = ?";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
-        return true;
     }
 
 }

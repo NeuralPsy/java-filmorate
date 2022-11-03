@@ -93,7 +93,7 @@ public class FilmService {
      * @param userId is an ID of a user sent from unlikeFilm(Long filmId, Long userId) method of FilmController class
      * @return count of film likes is returned
      */
-    public Integer unlikeFilm(Long filmId, Long userId) {
+    public boolean unlikeFilm(Long filmId, Long userId) {
         return storage.unlikeFilm(filmId, userId);
     }
 
