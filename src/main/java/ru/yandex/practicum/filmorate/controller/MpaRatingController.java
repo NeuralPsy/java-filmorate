@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.service.MpaRatingService;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/genres")
+@RequestMapping(value = "/mpa")
 public class MpaRatingController {
     private final MpaRatingService mpaRatingService;
 
