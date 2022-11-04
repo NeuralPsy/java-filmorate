@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.validation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.film.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -9,11 +10,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 @Slf4j
+@Component("memoryFilmValidation")
 public class MemoryFilmValidation implements FilmValidation{
 
     private Map<Long, Film> films;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public MemoryFilmValidation(){
+
+    }
 
     public MemoryFilmValidation(Map<Long, Film> films){
         this.films = films;

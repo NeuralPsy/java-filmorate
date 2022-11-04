@@ -15,6 +15,10 @@ public class MemoryUserValidation implements UserValidation{
 
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    public MemoryUserValidation(){
+
+    }
+
     public MemoryUserValidation(Map<Long, User> users){
         this.users = users;
     }

@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -7,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.film.FilmIdentificationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.validation.FilmValidation;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,16 +21,21 @@ import java.util.List;
 @Component("filmDbStorage")
 public class FIlmDbStorage implements FilmStorage{
 
+    private final FilmValidation filmValidation;
+
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final JdbcTemplate jdbcTemplate;
 
-    public FIlmDbStorage(JdbcTemplate jdbcTemplate){
+    @Autowired
+    public FIlmDbStorage(JdbcTemplate jdbcTemplate, @Qualifier("dbFilmValidation") FilmValidation filmValidation){
         this.jdbcTemplate = jdbcTemplate;
+        this.filmValidation = filmValidation;
     }
 
     @Override
     public Film addFilm(Film film) {
+        filmValidation.validateFilmToCreate(film);
         String lastUpdate = LocalDate.now().format(formatter);
         String sqlQuery = "insert into films (name, description, release_date, duration, mpa_rating, last_update)" +
                 "values (?, ?, ?, ?, ?, ?);";
@@ -53,6 +61,7 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public Long remove(Long filmId) {
+        filmValidation.identifyById(filmId);
         String sqlQuery = "delete from films where id = ?";
         try {
             jdbcTemplate.update(sqlQuery, filmId);
@@ -65,6 +74,7 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public Film update(Film film) {
+        filmValidation.validateFilmToUpdate(film);
         String lastUpdate = LocalDate.now().format(formatter);
         String sqlQuery = "update films set name = ?, release_date = ?, description = ?, duration = ?, " +
                 "mpa_rating = ?, last_update = ? where id = ?;";
@@ -83,12 +93,14 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public Film getById(Long filmId) {
+        filmValidation.identifyById(filmId);
         String sqlQuery = "select * from films where id = ?;";
         return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
     }
 
     @Override
     public boolean likeFilm(Long filmId, Long userId) {
+        filmValidation.identifyById(filmId);
         String lastUpdate = LocalDate.now().format(formatter);
         String sqlQuery = "update liked_films set film_id = ?, user_id = ?, last_update = ?;";
         jdbcTemplate.update(sqlQuery, filmId, userId, lastUpdate);
@@ -97,6 +109,8 @@ public class FIlmDbStorage implements FilmStorage{
 
     @Override
     public boolean unlikeFilm(Long filmId, Long userId) {
+        filmValidation.identifyById(filmId);
+        filmValidation.identifyUserByIdInFilm(filmId, userId);
         String sqlQuery = "delete from liked_films where film_id = ? and user_id = ?";
         jdbcTemplate.update(sqlQuery, filmId, userId);
         return true;
