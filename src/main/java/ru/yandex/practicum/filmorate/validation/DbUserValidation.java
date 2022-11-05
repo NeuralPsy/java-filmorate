@@ -17,37 +17,11 @@ public class DbUserValidation extends MemoryUserValidation{
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
-
-//    @Override
-//    public void validateUserToCreate(User user) {
-//
-//    }
-//
-//    @Override
-//    public void validateUserToUpdate(User user) {
-//
-//    }
-//
-//    @Override
-//    public void validateEmail(User user) {
-//
-//    }
-//
-//    @Override
-//    public void validateLogin(User user) {
-//
-//    }
-//
-//    @Override
-//    public void validateBirthday(User user) {
-//
-//    }
-
     @Override
     public void identifyUser(User user) {
-        String sqlQuery = "select count(*) from users where id = ?;";
-        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, user.getId())==1;
+        String sqlQuery = "select count(*) from users where id = ? and email = ? and login = ?;";
+        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, user.getId(),
+                user.getEmail(), user.getLogin())==1;
         log.info("User identification: "+isValid);
         if (!isValid) throw new UserIdentificationException("User with ID " + user.getId() + " is not found");
 
@@ -57,13 +31,8 @@ public class DbUserValidation extends MemoryUserValidation{
     public void identifyUserId(Long id) {
         String sqlQuery = "select count(*) from users where id = ?;";
         boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, id)==1;
-        log.info("User identification: "+isValid);
+        log.info("User identification by ID: "+isValid);
         if (!isValid) throw new UserIdentificationException("User with ID " + id + " is not found");
 
     }
-
-//    @Override
-//    public void validateUserId(User user) {
-//
-//    }
 }

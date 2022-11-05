@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * UserController is class that allows to send API requests to realize UserService methods.
@@ -49,7 +50,7 @@ public class UserController {
      * @return user if its validated and no exceptions are thrown
      */
     @PutMapping
-    public User update(@Valid @RequestBody User user){
+    public boolean update(@Valid @RequestBody User user){
         return userService.updateUser(user);
     }
 

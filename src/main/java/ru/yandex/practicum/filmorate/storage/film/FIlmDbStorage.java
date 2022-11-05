@@ -40,21 +40,10 @@ public class FIlmDbStorage implements FilmStorage{
         String sqlQuery = "insert into films (name, description, release_date, duration, mpa_rating, last_update)" +
                 "values (?, ?, ?, ?, ?, ?);";
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sqlQuery,film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                film.getMpaRating(), film.getLastUpdate());
 
-        jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
-            stmt.setString(1, film.getName());
-            stmt.setString(2, film.getDescription());
-            stmt.setString(3, film.getReleaseDate());
-            stmt.setString(4, String.valueOf(film.getDuration()));
-            stmt.setString(5, String.valueOf(film.getMpaRating()));
-            stmt.setString(6, lastUpdate);
-            return stmt;
-        }, keyHolder);
-
-        film.setId(keyHolder.getKey().longValue());
-        film.setLastUpdate(LocalDate.parse(lastUpdate, formatter));
+        film.setLastUpdate(lastUpdate);
 
         return film;
     }
@@ -80,7 +69,7 @@ public class FIlmDbStorage implements FilmStorage{
                 "mpa_rating = ?, last_update = ? where id = ?;";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
                 film.getDuration(), film.getMpaRating(), lastUpdate, film.getId());
-        film.setLastUpdate(LocalDate.parse(lastUpdate, formatter));
+        film.setLastUpdate(lastUpdate);
         return film;
     }
 
@@ -125,7 +114,7 @@ public class FIlmDbStorage implements FilmStorage{
                 .duration(rs.getLong("duration"))
                 .mpaRating(rs.getInt("mpa_rating"))
                 .releaseDate(rs.getString("release_date"))
-                .lastUpdate(LocalDate.parse(rs.getString("last_update"), formatter))
+                .lastUpdate(rs.getString("last_update"))
                 .build();
 
     }

@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * UserService is class that allows work with API requests (processed by FilmController)
@@ -31,7 +30,9 @@ public class UserService {
      * @return list of all existing users in storage as User class objects
      */
     public List<User> findAll() {
-        return storage.getAllUsers();
+        List<User> users = new ArrayList<>();
+        storage.getAllUsers().forEach(user -> users.add(user));
+        return users;
     }
 
     /**
@@ -46,7 +47,7 @@ public class UserService {
      * @param user is User class object sent from update(User user) method of UserController class
      * @return User class object if its validated and no exceptions are thrown
      */
-    public User updateUser(User user) {
+    public boolean updateUser(User user) {
         return storage.updateUser(user);
     }
 
@@ -74,11 +75,11 @@ public class UserService {
      * @param id user ID entered from getFriendList(Long id) method of UserController class
      * @return list of User class objects
      */
+
     public List<User> getFriendList(Long id) {
-        return storage.getFriendList(id)
-                .stream()
-                .map(id0 -> storage.getUserById(id0))
-                .collect(Collectors.toList());
+        List<User> users = new ArrayList<>();
+        storage.getFriendList(id).forEach(user -> users.add(user));
+        return users;
     }
 
     /**
@@ -89,7 +90,7 @@ public class UserService {
      */
     public List<User> getCommonFriends(Long id, Long otherId) {
         List<User> users = new ArrayList<>();
-        storage.getCommonFriends(id, otherId).forEach(commonId -> users.add(storage.getUserById(commonId)));
+        storage.getCommonFriends(id, otherId).forEach(user -> users.add(user));
         return users;
     }
 

@@ -21,7 +21,6 @@ public class InMemoryUserStorage implements UserStorage{
 
     private Map<Long, User> users = new HashMap<>();
 
-//    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static long idToAdd = 1;
 
     /**
@@ -34,17 +33,17 @@ public class InMemoryUserStorage implements UserStorage{
     /**
      * @param user is User class object sent from create(User user) method of UserController class
      *             and put in addUser(User user) method as argument in UserService class
-     * @exception BirthDayValidationException
-     * @exception EmailValidationException
-     * @exception LoginValidationException
      * @return User class object if its validated and no exceptions are thrown
+     * @throws BirthDayValidationException
+     * @throws EmailValidationException
+     * @throws LoginValidationException
      */
     public User addUser(User user){
         this.validation = new MemoryUserValidation(users);
         validation.validateUserToCreate(user);
         user.setId(idToAdd++);
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
-//        log.info("Creating user with ID: " + user.getId());
+        log.info("Creating user with ID: " + user.getId());
         users.put(user.getId(), user);
         return user;
     }
@@ -58,13 +57,13 @@ public class InMemoryUserStorage implements UserStorage{
      * @exception UserIDValidationException
      * @return User class object if its validated and no exceptions are thrown
      */
-    public User updateUser(User user){
+    public boolean updateUser(User user){
         this.validation = new MemoryUserValidation(users);
         log.info(user.getEmail() + " updating");
         validation.validateUserToUpdate(user);
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
         users.put(user.getId(), user);
-        return user;
+        return true;
     }
 
     /**
@@ -108,7 +107,7 @@ public class InMemoryUserStorage implements UserStorage{
      *            friends ID is invalid
      * @return list of User class objects
      */
-    public List<Long> getFriendList(Long userId){
+    public List<User> getFriendList(Long userId){
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(userId);
         return users.get(userId).getFriendList();
@@ -128,15 +127,15 @@ public class InMemoryUserStorage implements UserStorage{
     }
 
     /**
-     * @param id user ID entered from getCommonFriends(Long id, Long userId) method of UserController class
-     *           and put as argument in getCommonFriends(Long id, Long otherId) method in UserService class
+     * @param id      user ID entered from getCommonFriends(Long id, Long userId) method of UserController class
+     *                and put as argument in getCommonFriends(Long id, Long otherId) method in UserService class
      * @param otherId user ID entered from getCommonFriends(Long id, Long userId) method of UserController class
      *                and put as argument in getCommonFriends(Long id, Long otherId) method in UserService class
      *                whose common friends user needs to get
      * @return list of User class objects
      */
     @Override
-    public List<Long> getCommonFriends(Long id, Long otherId) {
+    public List<User> getCommonFriends(Long id, Long otherId) {
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(id);
         validation.identifyUserId(otherId);

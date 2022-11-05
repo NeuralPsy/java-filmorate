@@ -35,7 +35,7 @@ public class Film {
 
     private int mpaRating;
 
-    private LocalDate lastUpdate;
+    private String lastUpdate;
 
     public Long like(Long userId) {
         usersWhoLiked.add(userId);
