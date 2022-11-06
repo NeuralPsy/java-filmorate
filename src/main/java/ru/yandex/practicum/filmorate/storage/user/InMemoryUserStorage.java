@@ -26,7 +26,7 @@ public class InMemoryUserStorage implements UserStorage{
     /**
      * @return list of all existing users in storage as User class objects
      */
-    public List<User> getAllUsers(){
+    public Collection<User> getAllUsers(){
         return new ArrayList<>(users.values());
     }
 
@@ -78,8 +78,8 @@ public class InMemoryUserStorage implements UserStorage{
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(friendId);
         validation.identifyUserId(id);
-        users.get(id).addFriend(users.get(friendId));
-        users.get(friendId).addFriend(users.get(id));
+//        users.get(id).addFriend(users.get(friendId));
+//        users.get(friendId).addFriend(users.get(id));
         return true;
     }
 
@@ -95,22 +95,23 @@ public class InMemoryUserStorage implements UserStorage{
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(friendId);
         validation.identifyUserId(id);
-        users.get(id).removeFriend(friendId);
-        users.get(friendId).removeFriend(id);
+//        users.get(id).removeFriend(friendId);
+//        users.get(friendId).removeFriend(id);
         return true;
     }
 
     /**
      * @param userId user ID entered from getFriendList(Long id) method of UserController class and put in
      *               from getFriendList(Long id) method as argument in UserService class
-     * @exception UserIDValidationException may be thrown may be thrown if any user ID of his potential
-     *            friends ID is invalid
      * @return list of User class objects
+     * @throws UserIDValidationException may be thrown may be thrown if any user ID of his potential
+     *                                   friends ID is invalid
      */
-    public List<User> getFriendList(Long userId){
+    public Collection<User> getFriendList(Long userId){
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(userId);
-        return users.get(userId).getFriendList();
+//        return users.get(userId).getFriendList();
+        return new ArrayList<>();
     }
 
     /**
@@ -135,14 +136,15 @@ public class InMemoryUserStorage implements UserStorage{
      * @return list of User class objects
      */
     @Override
-    public List<User> getCommonFriends(Long id, Long otherId) {
+    public Collection<User> getCommonFriends(Long id, Long otherId) {
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(id);
         validation.identifyUserId(otherId);
-        return users.get(id)
-                .getFriendList()
-                .stream()
-                .filter(users.get(otherId).getFriendList()::contains)
-                .collect(Collectors.toList());
+//        return users.get(id)
+//                .getFriendList()
+//                .stream()
+//                .filter(users.get(otherId).getFriendList()::contains)
+//                .collect(Collectors.toList());
+        return new ArrayList<>();
     }
 }

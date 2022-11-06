@@ -7,6 +7,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public class UserController {
      * @return list of all existing users in storage as User class objects
      */
     @GetMapping
-    public List<User> findAll(){
+    public Collection<User> findAll(){
         return userService.findAll();
     }
 
@@ -75,7 +77,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriendList(@PathVariable Long id){
+    public Collection<User> getFriendList(@PathVariable Long id){
         return userService.getFriendList(id);
     }
 
@@ -85,7 +87,7 @@ public class UserController {
      * @return list of User class objects
      */
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId){
+    public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId){
         return userService.getCommonFriends(id, otherId);
     }
 

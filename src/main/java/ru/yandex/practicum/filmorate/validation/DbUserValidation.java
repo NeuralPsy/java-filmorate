@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.User;
 public class DbUserValidation extends MemoryUserValidation{
     private final JdbcTemplate jdbcTemplate;
 
-
     public DbUserValidation(JdbcTemplate jdbcTemplate){
         super();
         this.jdbcTemplate = jdbcTemplate;

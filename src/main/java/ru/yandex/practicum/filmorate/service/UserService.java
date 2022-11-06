@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class UserService {
     /**
      * @return list of all existing users in storage as User class objects
      */
-    public List<User> findAll() {
+    public Collection<User> findAll() {
         return storage.getAllUsers();
     }
 
@@ -74,7 +75,7 @@ public class UserService {
      * @return list of User class objects
      */
 
-    public List<User> getFriendList(Long id) {
+    public Collection<User> getFriendList(Long id) {
         return storage.getFriendList(id);
     }
 
@@ -84,7 +85,7 @@ public class UserService {
      *                whose common friends user needs to get
      * @return list of User class objects
      */
-    public List<User> getCommonFriends(Long id, Long otherId) {
+    public Collection<User> getCommonFriends(Long id, Long otherId) {
         return storage.getCommonFriends(id, otherId);
     }
 

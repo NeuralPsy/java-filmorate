@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validation.UserValidation;
@@ -12,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.Collection;
 
 @Component("userDbStorage")
 @Slf4j
@@ -33,7 +34,7 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public Collection<User> getAllUsers() {
         String sqlQuery = "select * from users;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs));
     }
@@ -91,7 +92,7 @@ public class UserDbStorage implements UserStorage{
         return true;
     }
 
-    public List<User> getFriendList(Long id) {
+    public Collection<User> getFriendList(Long id) {
         userValidation.identifyUserId(id);
         String sqlQuery = "select * from users where id in(select friend_id from frienslist where user_id =?)";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), id);
@@ -106,7 +107,7 @@ public class UserDbStorage implements UserStorage{
     }
 
     @Override
-    public List<User> getCommonFriends(Long id, Long otherId) {
+    public Collection<User> getCommonFriends(Long id, Long otherId) {
         String sqlQuery = "select * from users where id in (select friend_id from friendlist where user_id in (?, ?) " +
                 "group by friend_id having count(*) = ?);";
 
