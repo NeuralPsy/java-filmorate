@@ -48,8 +48,6 @@ public class UserDbStorage implements UserStorage{
         String sqlQuery = "insert into users (email, login, name, birthday, last_update)" +
                 "values (?, ?, ?, ?, ?);";
 
-
-
         jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(),
                 user.getName(), user.getBirthday(), lastUpdate);
 
@@ -96,7 +94,7 @@ public class UserDbStorage implements UserStorage{
 
     public Collection<User> getFriendList(Long id) {
         userValidation.identifyUserId(id);
-        String sqlQuery = "select * from users where id in(select friend_id from frienslist where user_id =?)";
+        String sqlQuery = "select * from users where id in(select friend_id from friendlist where user_id =?)";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), id);
     }
 
