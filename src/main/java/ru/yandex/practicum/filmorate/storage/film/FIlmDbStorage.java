@@ -41,9 +41,15 @@ public class FIlmDbStorage implements FilmStorage{
                 "values (?, ?, ?, ?, ?, ?);";
 
         jdbcTemplate.update(sqlQuery,film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                film.getMpaRating(), film.getLastUpdate());
+                film.getMpaRating(), lastUpdate);
+
+        Long id = jdbcTemplate.queryForObject("select id from films where name = ? and description = ? " +
+                        "and release_date = ? and duration = ? and last_update = ?;",
+                Long.class, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
+                film.getLastUpdate(), lastUpdate);
 
         film.setLastUpdate(lastUpdate);
+        film.setId(id);
 
         return film;
     }
@@ -112,7 +118,7 @@ public class FIlmDbStorage implements FilmStorage{
                 .name(rs.getString("name"))
                 .description(rs.getString("description"))
                 .duration(rs.getLong("duration"))
-                .mpaRating(rs.getInt("mpa_rating"))
+                .mpaRating(rs.getByte("mpa_rating"))
                 .releaseDate(rs.getString("release_date"))
                 .lastUpdate(rs.getString("last_update"))
                 .build();

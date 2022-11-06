@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class MpaRating {
-    private Integer ratingId;
+    private byte id;
     private String name;
-    private LocalDate lastUpdate;
+    private String lastUpdate;
 }

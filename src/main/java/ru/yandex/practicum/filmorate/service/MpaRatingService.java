@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.MpaRatingDao;
 import ru.yandex.practicum.filmorate.model.MpaRating;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -16,7 +17,7 @@ public class MpaRatingService {
     }
 
 
-    public List<MpaRating> findAll(){
+    public Collection<MpaRating> findAll(){
         return mpaRatingDao.getMpaRatingsList();
     }
 

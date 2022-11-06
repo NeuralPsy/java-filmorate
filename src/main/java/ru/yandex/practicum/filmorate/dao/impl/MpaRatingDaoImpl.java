@@ -7,9 +7,8 @@ import ru.yandex.practicum.filmorate.model.MpaRating;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.Collection;
 
 @Component
 public class MpaRatingDaoImpl implements MpaRatingDao {
@@ -23,23 +22,23 @@ public class MpaRatingDaoImpl implements MpaRatingDao {
     }
 
     @Override
-    public List<MpaRating> getMpaRatingsList() {
+    public Collection<MpaRating> getMpaRatingsList() {
         String sqlQuery = "select * from mpa_rating;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeMpaRating(rs));
     }
 
     @Override
     public MpaRating getMpaRating(Integer ratingId) {
-        String sqlQuery = "select * from mpa_rating where ratind_id = ?;";
-        return jdbcTemplate.queryForObject(sqlQuery, MpaRating.class, ratingId);
+        String sqlQuery = "select * from mpa_rating where id = ?;";
+        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeMpaRating(rs), ratingId);
     }
 
 
     private MpaRating makeMpaRating(ResultSet rs) throws SQLException {
         return MpaRating.builder()
-                .ratingId(rs.getInt("rating_id"))
+                .id(rs.getByte("id"))
                 .name(rs.getString("name"))
-                .lastUpdate(LocalDate.parse(rs.getString("last_update"), formatter))
+                .lastUpdate(rs.getString("last_update"))
                 .build();
     }
 }

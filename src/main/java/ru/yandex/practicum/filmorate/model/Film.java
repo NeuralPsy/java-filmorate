@@ -33,7 +33,7 @@ public class Film {
     @Positive
     private long duration;
 
-    private int mpaRating;
+    private byte mpaRating;
 
     private String lastUpdate;
 
