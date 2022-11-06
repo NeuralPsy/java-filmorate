@@ -51,19 +51,19 @@ public class InMemoryUserStorage implements UserStorage{
     /**
      * @param user is User class object sent from update(User user) method of UserController class
      *             and put in updateUser(User user) method as argument in UserService class
-     * @exception BirthDayValidationException
-     * @exception EmailValidationException
-     * @exception LoginValidationException
-     * @exception UserIDValidationException
      * @return User class object if its validated and no exceptions are thrown
+     * @throws BirthDayValidationException
+     * @throws EmailValidationException
+     * @throws LoginValidationException
+     * @throws UserIDValidationException
      */
-    public boolean updateUser(User user){
+    public User updateUser(User user){
         this.validation = new MemoryUserValidation(users);
         log.info(user.getEmail() + " updating");
         validation.validateUserToUpdate(user);
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
         users.put(user.getId(), user);
-        return true;
+        return user;
     }
 
     /**

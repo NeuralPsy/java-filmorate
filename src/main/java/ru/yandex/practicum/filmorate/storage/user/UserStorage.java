@@ -12,7 +12,7 @@ public interface UserStorage {
 
     User addUser(User user);
 
-    boolean updateUser(User user);
+    User updateUser(User user);
 
     boolean addFriend(Long id, Long friendId);
 

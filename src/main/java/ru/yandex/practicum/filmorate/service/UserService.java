@@ -30,9 +30,7 @@ public class UserService {
      * @return list of all existing users in storage as User class objects
      */
     public List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        storage.getAllUsers().forEach(user -> users.add(user));
-        return users;
+        return storage.getAllUsers();
     }
 
     /**
@@ -47,7 +45,7 @@ public class UserService {
      * @param user is User class object sent from update(User user) method of UserController class
      * @return User class object if its validated and no exceptions are thrown
      */
-    public boolean updateUser(User user) {
+    public User updateUser(User user) {
         return storage.updateUser(user);
     }
 
@@ -77,9 +75,7 @@ public class UserService {
      */
 
     public List<User> getFriendList(Long id) {
-        List<User> users = new ArrayList<>();
-        storage.getFriendList(id).forEach(user -> users.add(user));
-        return users;
+        return storage.getFriendList(id);
     }
 
     /**
@@ -89,9 +85,7 @@ public class UserService {
      * @return list of User class objects
      */
     public List<User> getCommonFriends(Long id, Long otherId) {
-        List<User> users = new ArrayList<>();
-        storage.getCommonFriends(id, otherId).forEach(user -> users.add(user));
-        return users;
+        return storage.getCommonFriends(id, otherId);
     }
 
     /**

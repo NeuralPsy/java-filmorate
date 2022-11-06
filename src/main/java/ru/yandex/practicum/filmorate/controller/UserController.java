@@ -50,7 +50,7 @@ public class UserController {
      * @return user if its validated and no exceptions are thrown
      */
     @PutMapping
-    public boolean update(@Valid @RequestBody User user){
+    public User update(@Valid @RequestBody User user){
         return userService.updateUser(user);
     }
 
