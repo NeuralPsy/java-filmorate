@@ -43,13 +43,15 @@ public class UserDbStorage implements UserStorage{
     public User addUser(User user) {
         userValidation.validateUserToCreate(user);
         String lastUpdate = LocalDate.now().format(formatter);
+        if (user.getName().equals("") || user.getName().isBlank()) user.setName(user.getLogin());
 
         String sqlQuery = "insert into users (email, login, name, birthday, last_update)" +
                 "values (?, ?, ?, ?, ?);";
 
+
+
         jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(),
                 user.getName(), user.getBirthday(), lastUpdate);
-
 
         Long id = jdbcTemplate.queryForObject("select id from users where email = ? and login = ? and birthday = ? and last_update = ?;",
                 Long.class, user.getEmail(), user.getLogin(), user.getBirthday(), lastUpdate);
@@ -79,7 +81,7 @@ public class UserDbStorage implements UserStorage{
         String lastUpdate = LocalDate.now().format(formatter);
         String sqlQuery = "insert into friendlist (user_id, friend_id, status, last_update)" +
                 "values(?, ?, ?, ?);";
-        jdbcTemplate.update(sqlQuery,id, friendId, 1, lastUpdate);
+        jdbcTemplate.update(sqlQuery,id, friendId, false, lastUpdate);
         return true;
     }
 

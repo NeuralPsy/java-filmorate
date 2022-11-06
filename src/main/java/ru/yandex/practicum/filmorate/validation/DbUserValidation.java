@@ -18,9 +18,8 @@ public class DbUserValidation extends MemoryUserValidation{
 
     @Override
     public void identifyUser(User user) {
-        String sqlQuery = "select count(*) from users where id = ? and email = ? and login = ?;";
-        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, user.getId(),
-                user.getEmail(), user.getLogin())==1;
+        String sqlQuery = "select count(*) from users where id = ?;";
+        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, user.getId())==1;
         log.info("User identification: "+isValid);
         if (!isValid) throw new UserIdentificationException("User with ID " + user.getId() + " is not found");
 
