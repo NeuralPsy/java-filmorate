@@ -10,8 +10,7 @@ import ru.yandex.practicum.filmorate.exception.film.FilmIdentificationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validation.FilmValidation;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -43,15 +42,13 @@ public class FIlmDbStorage implements FilmStorage{
         String sqlQuery = "insert into films (name, description, release_date, duration, mpa, last_update)" +
                 "values (?, ?, ?, ?, ?, ?);";
 
+        film.setLastUpdate(lastUpdate);
+
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getMpa().getId(), lastUpdate);
 
-        Long id = jdbcTemplate.queryForObject("select id from films where name = ? and description = ? " +
-                        "and release_date = ? and duration = ? and last_update = ?;",
-                Long.class, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                film.getLastUpdate(), lastUpdate);
+        Long id = jdbcTemplate.queryForObject("SELECT id from films order by id desc limit 1;", Long.class);
 
-        film.setLastUpdate(lastUpdate);
         film.setId(id);
 
         return film;

@@ -34,7 +34,6 @@ public class Film {
 
     private Mpa mpa;
 
-    @JsonIgnore
     private String lastUpdate;
 
 //    public Long like(Long userId) {
