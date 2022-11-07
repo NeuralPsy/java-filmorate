@@ -72,7 +72,7 @@ public class FIlmDbStorage implements FilmStorage{
         filmValidation.validateFilmToUpdate(film);
         String lastUpdate = LocalDate.now().format(formatter);
         String sqlQuery = "update films set name = ?, release_date = ?, description = ?, duration = ?, " +
-                "mpa_rating = ?, last_update = ? where id = ?;";
+                "mpa = ?, last_update = ? where id = ?;";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
                 film.getDuration(), film.getMpa().getId(), lastUpdate, film.getId());
         film.setLastUpdate(lastUpdate);
