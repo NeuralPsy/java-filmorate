@@ -150,14 +150,14 @@ public class FIlmDbStorage implements FilmStorage{
 
     }
 
-    private List<Genre> makeGenreList(ResultSet rs){
+    private List<Genre> makeGenreList(ResultSet rs) {
         List<Genre> genres = new ArrayList<>();
         try {
             Array genres_ids = rs.getArray("genre");
             Integer[] ids = (Integer[]) genres_ids.getArray();
             List<Integer> ids2 = new ArrayList<>(Arrays.asList(ids));
             ids2.forEach(id -> genres.add(genreDao.getGenreById(id)));
-        } catch (NullPointerException | SQLException e){
+        } catch (SQLException e){
 
         }
         return genres;

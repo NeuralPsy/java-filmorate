@@ -28,12 +28,12 @@ public class GenreDaoImpl implements GenreDao {
     @Override
     public Genre getGenreById(Integer genreId) {
         String sqlQuery = "select * from genres where id = ?;";
-        return jdbcTemplate.queryForObject(sqlQuery, Genre.class, genreId);
+        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeGenre(rs), genreId);
     }
 
     private Genre makeGenre(ResultSet rs) throws SQLException {
         return Genre.builder()
-                .id(rs.getInt("genre_id"))
+                .id(rs.getInt("id"))
                 .name(rs.getString("name"))
                 .lastUpdate(rs.getString("last_update"))
                 .build();
