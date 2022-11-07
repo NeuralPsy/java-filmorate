@@ -1,27 +1,25 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.MpaRatingDao;
-import ru.yandex.practicum.filmorate.model.MpaRating;
+import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 public class MpaRatingService {
+    private final MpaDao mpaDao;
 
-    private final MpaRatingDao mpaRatingDao;
-
-    public MpaRatingService(MpaRatingDao mpaRatingDao){
-        this.mpaRatingDao = mpaRatingDao;
+    public MpaRatingService(MpaDao mpaDao){
+        this.mpaDao = mpaDao;
     }
 
 
-    public Collection<MpaRating> findAll(){
-        return mpaRatingDao.getMpaRatingsList();
+    public Collection<Mpa> findAll(){
+        return mpaDao.getMpaList();
     }
 
-    public MpaRating getMpaRating(Integer id) {
-        return mpaRatingDao.getMpaRating(id);
+    public Mpa getMpa(Integer id) {
+        return mpaDao.getMpa(id);
     }
 }

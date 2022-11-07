@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +32,7 @@ public class FilmService {
     /**
      * @return list of all existing films in storage as Film class objects
      */
-    public List<Film> findAll(){
+    public Collection<Film> findAll(){
         return storage.findAll();
     }
 
@@ -84,7 +86,7 @@ public class FilmService {
      */
     public Integer likeFilm(Long filmId, Long userId){
         storage.likeFilm(filmId, userId);
-        return storage.getById(filmId).getLikesCount();
+        return storage.getLikesCount(filmId);
     }
 
     /**
@@ -103,11 +105,7 @@ public class FilmService {
      * @return list of Film class objects is returned.
      * Number of films is list equals "count" value
      */
-    public List<Film> showTopFilms(Integer count) {
-            return storage.findAll()
-                    .stream()
-                    .sorted((film1, film2) -> film2.getLikesCount().compareTo(film1.getLikesCount()))
-                    .limit(count)
-                    .collect(Collectors.toList());
+    public Collection<Film> showTopFilms(Integer count) {
+            return storage.showTopFilms(count);
     }
 }

@@ -7,12 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validation.FilmValidation;
 import ru.yandex.practicum.filmorate.validation.MemoryFilmValidation;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The class implements FilmStorage interface to work with Film class objects in storage
@@ -29,7 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     /**
      * @return list of all existing films in storage as Film class objects as it requested via FilmController class
      */
-    public List<Film> findAll(){
+    public Collection<Film> findAll(){
         return new ArrayList<>(films.values());
     }
 
@@ -112,7 +107,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     public boolean likeFilm(Long filmId, Long userId){
         this.validation = new MemoryFilmValidation(films);
         validation.identifyById(filmId);
-        films.get(filmId).like(userId);
+//        films.get(filmId).like(userId);
         return true;
     }
 
@@ -131,7 +126,17 @@ public class InMemoryFilmStorage implements FilmStorage{
         this.validation = new MemoryFilmValidation(films);
         validation.identifyById(filmId);
         validation.identifyUserByIdInFilm(filmId, userId);
-        films.get(filmId).unlike(userId);
+//        films.get(filmId).unlike(userId);
         return true;
+    }
+
+    @Override
+    public Integer getLikesCount(Long filmId) {
+        return null;
+    }
+
+    @Override
+    public Collection<Film> showTopFilms(Integer count) {
+        return null;
     }
 }

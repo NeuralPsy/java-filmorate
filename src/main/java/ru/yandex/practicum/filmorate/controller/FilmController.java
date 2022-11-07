@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public class FilmController {
      * @return list of all existing films in storage as Film class objects
      */
     @GetMapping
-    public List<Film> findAll(){
+    public Collection<Film> findAll(){
         return filmService.findAll();
     }
 
@@ -124,7 +125,7 @@ public class FilmController {
      * Number of films is list equals "count" request parameter
      */
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
+    public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
         return filmService.showTopFilms(count);
     }
 
