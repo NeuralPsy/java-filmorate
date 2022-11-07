@@ -3,24 +3,31 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.dao.impl.MpaRatingDaoImpl;
 import ru.yandex.practicum.filmorate.exception.film.FilmIdentificationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.validation.FilmValidation;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Component("filmDbStorage")
 public class FIlmDbStorage implements FilmStorage{
 
     private final FilmValidation filmValidation;
-
     private final MpaRatingDaoImpl mpa;
+
+    private final GenreDao genreDao;
 
     private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -29,10 +36,12 @@ public class FIlmDbStorage implements FilmStorage{
     @Autowired
     public FIlmDbStorage(JdbcTemplate jdbcTemplate,
                          @Qualifier("dbFilmValidation") FilmValidation filmValidation,
-                         @Qualifier("mpaRatingDaoImpl") MpaRatingDaoImpl mpa){
+                         @Qualifier("mpaRatingDaoImpl") MpaRatingDaoImpl mpa,
+                         GenreDao genreDao){
         this.jdbcTemplate = jdbcTemplate;
         this.filmValidation = filmValidation;
         this.mpa = mpa;
+        this.genreDao = genreDao;
     }
 
     @Override
@@ -134,10 +143,24 @@ public class FIlmDbStorage implements FilmStorage{
                 .description(rs.getString("description"))
                 .duration(rs.getLong("duration"))
                 .mpa(mpa.getMpa(rs.getInt("mpa")))
+                .genres(makeGenreList(rs))
                 .releaseDate(rs.getString("release_date"))
                 .lastUpdate(rs.getString("last_update"))
                 .build();
 
+    }
+
+    private List<Genre> makeGenreList(ResultSet rs){
+        List<Genre> genres = new ArrayList<>();
+        try {
+            Array genres_ids = rs.getArray("genre");
+            Integer[] ids = (Integer[]) genres_ids.getArray();
+            List<Integer> ids2 = new ArrayList<>(Arrays.asList(ids));
+            ids2.forEach(id -> genres.add(genreDao.getGenreById(id)));
+        } catch (NullPointerException | SQLException e){
+
+        }
+        return genres;
     }
 
 }
