@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component("filmDbStorage")
 public class FIlmDbStorage implements FilmStorage{
@@ -51,14 +52,18 @@ public class FIlmDbStorage implements FilmStorage{
         String sqlQuery = "insert into films (name, description, release_date, duration, mpa, last_update)" +
                 "values (?, ?, ?, ?, ?, ?);";
 
-        film.setLastUpdate(lastUpdate);
-
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getMpa().getId(), lastUpdate);
+        film.setLastUpdate(lastUpdate);
 
         Long id = jdbcTemplate.queryForObject("SELECT id from films order by id desc limit 1;", Long.class);
 
         film.setId(id);
+
+        String sqlQuery2 = "insert into film_genre (film_id, genre_id) values (?, ?);";
+        if (film.getGenres() == null || film.getGenres().size() == 0) return film;
+
+        film.getGenres().forEach(genre -> jdbcTemplate.update(sqlQuery2, film.getId(), genre.getId()));
 
         return film;
     }
@@ -85,6 +90,7 @@ public class FIlmDbStorage implements FilmStorage{
         jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
                 film.getDuration(), film.getMpa().getId(), lastUpdate, film.getId());
         film.setLastUpdate(lastUpdate);
+
         return film;
     }
 
@@ -131,7 +137,7 @@ public class FIlmDbStorage implements FilmStorage{
     public Collection<Film> showTopFilms(Integer count) {
         String sqlQuery = "SELECT *, (SELECT COUNT(*) FROM liked_films " +
                 "WHERE liked_films.film_id = films.id ) AS rating " +
-                "FROM films ORDER BY rating DESC LIMIT ?;";
+                "FROM films GROUP BY films.id ORDER BY rating DESC LIMIT ?;";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs), count);
     }
 
@@ -150,16 +156,12 @@ public class FIlmDbStorage implements FilmStorage{
 
     }
 
-    private List<Genre> makeGenreList(ResultSet rs) {
+    private List<Genre> makeGenreList(ResultSet rs) throws SQLException {
         List<Genre> genres = new ArrayList<>();
-        try {
-            Array genres_ids = rs.getArray("genre");
-            Integer[] ids = (Integer[]) genres_ids.getArray();
-            List<Integer> ids2 = new ArrayList<>(Arrays.asList(ids));
-            ids2.forEach(id -> genres.add(genreDao.getGenreById(id)));
-        } catch (SQLException e){
-
-        }
+            String sqlQuery = "select genre_id from film_genre where film_id = ?;";
+            jdbcTemplate.query(sqlQuery,
+                    (rsInGenres, rowNum) -> genreDao.getGenreById(rsInGenres.getInt("genre_id")),
+                    rs.getLong("id")).forEach(genre -> genres.add(genre));
         return genres;
     }
 

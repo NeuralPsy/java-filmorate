@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +43,7 @@ public class FilmService {
      *             If one of object properties is invalid, an exception is thrown
      * @return film object if its validated and no exception were thrown
      */
-    public Film addFilm(Film film){
+    public Film addFilm(Film film) throws SQLException {
         return storage.addFilm(film);
     }
 

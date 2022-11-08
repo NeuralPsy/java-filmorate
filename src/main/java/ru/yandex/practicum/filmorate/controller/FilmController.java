@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class FilmController {
      * @return film object if its validated and no exception were thrown
      */
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) throws SQLException {
         return filmService.addFilm(film);
     }
 
