@@ -19,7 +19,7 @@ class UserControllerTest {
 
     @BeforeEach
     void createUser(){
-        user  = new User();
+        user  = User.builder().build();
     }
 
     @Test

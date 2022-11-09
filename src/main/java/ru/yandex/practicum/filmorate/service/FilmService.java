@@ -8,9 +8,6 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * FilmService is class that allows work with API requests (processed by FilmController)

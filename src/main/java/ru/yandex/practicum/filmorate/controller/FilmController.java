@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import javax.validation.Valid;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * FilmController is class that allows to send API requests to do realize FilmService methods.

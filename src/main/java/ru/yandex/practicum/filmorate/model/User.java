@@ -27,6 +27,7 @@ public class User {
 
     String lastUpdate;
 
+
 //    @JsonIgnore
 //    private Set<Integer> likedMovies = new HashSet<>();
 //
