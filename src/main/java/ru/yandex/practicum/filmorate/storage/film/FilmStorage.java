@@ -24,7 +24,7 @@ public interface FilmStorage {
 
     boolean unlikeFilm(Long filmId, Long userId);
 
-    Integer getLikesCount(Long filmId);
+    Long getLikesCount(Long filmId);
 
     Collection<Film> showTopFilms(Integer count);
 }

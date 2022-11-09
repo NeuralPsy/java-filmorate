@@ -3,13 +3,15 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
+import ru.yandex.practicum.filmorate.exception.GenreIdDoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class GenreDaoImpl implements GenreDao {
@@ -20,15 +22,21 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public List<Genre> getGenresList() {
+    public Collection<Genre> getAllGenres() {
         String sqlQuery = "select * from genres;";
-        return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeGenre(rs));
+        List<Genre> genres =  new ArrayList<>();
+
+        jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeGenre(rs)).forEach(genre -> genres.add(genre));
+        return genres;
     }
 
     @Override
     public Genre getGenreById(Integer genreId) {
-        String sqlQuery = "select * from genres where id = ?;";
-        return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeGenre(rs), genreId);
+        validateGenreId(genreId);
+        return getAllGenres().stream()
+                .filter(genre -> genre.getId() == genreId)
+                .collect(Collectors.toList())
+                .get(0);
     }
 
     private Genre makeGenre(ResultSet rs) throws SQLException {
@@ -37,5 +45,11 @@ public class GenreDaoImpl implements GenreDao {
                 .name(rs.getString("name"))
                 .lastUpdate(rs.getString("last_update"))
                 .build();
+    }
+
+    private void validateGenreId(Integer genreId){
+        String sqlQuery = "select count(*) from genres where id = ?;";
+        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, genreId) != 0 && genreId > 0;
+        if (!isValid) throw new GenreIdDoesNotExistsException("Could not find genre with id "+ genreId);
     }
 }

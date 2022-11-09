@@ -85,7 +85,7 @@ public class FilmService {
      * @param userId is an ID of a user sent from likeFilm(Long filmId, Long userId) method of FilmController class
      * @return count of film likes is returned
      */
-    public Integer likeFilm(Long filmId, Long userId){
+    public Long likeFilm(Long filmId, Long userId){
         storage.likeFilm(filmId, userId);
         return storage.getLikesCount(filmId);
     }

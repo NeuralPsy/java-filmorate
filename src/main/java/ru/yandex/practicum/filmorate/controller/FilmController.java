@@ -98,7 +98,7 @@ public class FilmController {
      * @return count of film likes is returned
      */
     @PutMapping("/{filmId}/like/{userId}")
-    public Integer likeFilm(@PathVariable Long filmId, @PathVariable Long userId){
+    public Long likeFilm(@PathVariable Long filmId, @PathVariable Long userId){
         return filmService.likeFilm(filmId, userId);
     }
 

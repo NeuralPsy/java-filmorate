@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
+import ru.yandex.practicum.filmorate.exception.MpaIdDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
@@ -26,6 +27,7 @@ public class MpaRatingDaoImpl implements MpaDao {
 
     @Override
     public Mpa getMpa(Integer ratingId) {
+        validateMpa(ratingId);
         String sqlQuery = "select * from mpa where id = ?;";
         return jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeMpa(rs), ratingId);
     }
@@ -37,5 +39,11 @@ public class MpaRatingDaoImpl implements MpaDao {
                 .name(rs.getString("name"))
                 .lastUpdate(rs.getString("last_update"))
                 .build();
+    }
+
+    private void validateMpa(Integer ratindId) throws MpaIdDoesNotExistException {
+        String sqlQuery = "select count(*) from mpa where id = ?;";
+        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, ratindId) == 1;
+        if (!isValid) throw new MpaIdDoesNotExistException("Count not find MPA rating with ID "+ratindId);
     }
 }

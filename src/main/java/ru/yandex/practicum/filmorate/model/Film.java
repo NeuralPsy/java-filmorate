@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 @Data
 @Builder
+@EqualsAndHashCode
 public class Film {
 
     private long id;
@@ -36,9 +38,14 @@ public class Film {
 
     private Mpa mpa;
 
-    private List<Genre> genres;
+    private Set<Genre> genres;
+
+    @EqualsAndHashCode.Include
+    private Long likesCount;
 
     private String lastUpdate;
+
+
 
 //    public Long like(Long userId) {
 //        usersWhoLiked.add(userId);

@@ -33,13 +33,11 @@ public class MemoryFilmValidation implements FilmValidation{
                 + userId + " didn't like the film. It is not possible to unlike");
     }
 
+    @Override
     public void validateFilmToCreate(Film film) {
-        validateReleaseDate(film);
-        validateDescription(film);
-        validateDuration(film);
-        validateName(film);
 
     }
+
 
     public void validateFilmToUpdate(Film film) {
         validateReleaseDate(film);
@@ -81,5 +79,10 @@ public class MemoryFilmValidation implements FilmValidation{
         boolean isValid = films.containsKey(id);
         log.info("Film identification by ID: {}", isValid);
         if (!isValid) throw new FilmIdentificationException("Film with ID " + id + " is not found");
+    }
+
+    @Override
+    public void identifyUser(Long userId) {
+
     }
 }

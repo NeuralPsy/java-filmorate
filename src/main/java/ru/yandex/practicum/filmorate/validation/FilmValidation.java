@@ -21,4 +21,6 @@ public interface FilmValidation {
     void validateName(Film film);
 
     void identifyById(Long id);
+
+    void identifyUser(Long userId);
 }

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.util.List;
+import java.util.Collection;
 
 @Service
 public class GenreService {
@@ -14,8 +14,8 @@ public class GenreService {
         this.genreDao = genreDao;
     }
 
-    public List<Genre> findAll(){
-        return genreDao.getGenresList();
+    public Collection<Genre> findAll(){
+        return genreDao.getAllGenres();
     }
 
     public Genre getGenreById(Integer genreId){
