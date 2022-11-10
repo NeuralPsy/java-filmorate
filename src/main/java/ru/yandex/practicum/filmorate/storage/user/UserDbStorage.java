@@ -114,6 +114,16 @@ public class UserDbStorage implements UserStorage{
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeUser(rs), id, otherId, 2);
     }
 
+
+    @Override
+    public boolean getFriendshipStatus(Long userId, Long friendId){
+        String sqlQuery = "select status from friendlist where user_id = ? and friend_id = ?;";
+
+        return jdbcTemplate.queryForObject(sqlQuery, Boolean.class, userId, friendId);
+
+    }
+
+
     private User makeUser(ResultSet rs) throws SQLException {
         return User.builder()
                 .id(rs.getLong("id"))

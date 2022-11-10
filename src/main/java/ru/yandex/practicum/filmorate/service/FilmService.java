@@ -100,8 +100,8 @@ public class FilmService {
     /**
      * Method allows getting top films according to number of likes
      * @param count is value sent from showTopFilms(Integer count) method of FilmController class
-     * @return list of Film class objects is returned.
-     * Number of films is list equals "count" value
+     * @return Collection of Film class objects is returned.
+     * Number of films if list equals "count" value
      */
     public Collection<Film> showTopFilms(Integer count) {
             return storage.showTopFilms(count);

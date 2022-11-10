@@ -314,12 +314,12 @@ class FilmoRateApplicationTests {
 
 		assertThat(topFilms.size()).isEqualTo(1);
 
-		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(3));
-		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("name", "new_film");
-		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("releaseDate", "2000-10-10");
-		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("description", "text");
-		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("duration", Long.valueOf(222));
-		assertThat(topFilms.get(0).getMpa()).hasFieldOrPropertyWithValue("id", 5);
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("name", "film1");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("releaseDate", "1989-08-08");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("description", "description of the film");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("duration", Long.valueOf(139));
+		assertThat(topFilms.get(0).getMpa()).hasFieldOrPropertyWithValue("id", 1);
 
 	}
 

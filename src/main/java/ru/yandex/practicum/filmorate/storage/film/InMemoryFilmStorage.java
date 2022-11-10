@@ -22,7 +22,7 @@ public class InMemoryFilmStorage implements FilmStorage{
     private static int id = 1;
 
     /**
-     * @return list of all existing films in storage as Film class objects as it requested via FilmController class
+     * @return collection of all existing films in storage as Film class objects as it requested via FilmController class
      */
     public Collection<Film> findAll(){
         return new ArrayList<>(films.values());
@@ -126,7 +126,6 @@ public class InMemoryFilmStorage implements FilmStorage{
         this.validation = new MemoryFilmValidation(films);
         validation.identifyById(filmId);
         validation.identifyUserByIdInFilm(filmId, userId);
-//        films.get(filmId).unlike(userId);
         return true;
     }
 

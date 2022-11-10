@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"ru.yandex.practicum.filmorate.storage.film","l":"FIlmDbStorage"}];updateSearchResults();

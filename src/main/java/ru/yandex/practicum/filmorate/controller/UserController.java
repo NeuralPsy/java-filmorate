@@ -96,4 +96,9 @@ public class UserController {
     public User getUser(@PathVariable Long id){
         return userService.getUser(id);
     }
+
+    @GetMapping
+    public boolean getFriendshipStatus(@RequestParam Long userId, @RequestParam Long friendId){
+        return userService.getFriendhipStatus(userId, friendId);
+    }
 }

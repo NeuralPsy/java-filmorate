@@ -94,4 +94,8 @@ public class UserService {
     public User getUser(Long id) {
         return storage.getUserById(id);
     }
+
+    public boolean getFriendhipStatus(Long userId, Long friendId) {
+        return storage.getFriendshipStatus(userId, friendId);
+    }
 }
