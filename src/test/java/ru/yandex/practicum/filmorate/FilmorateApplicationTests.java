@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import ru.yandex.practicum.filmorate.dao.impl.MpaRatingDaoImpl;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FIlmDbStorage;
@@ -27,6 +28,9 @@ class FilmoRateApplicationTests {
 
 	@Autowired
 	private final FIlmDbStorage filmStorage;
+
+	@Autowired
+	private final MpaRatingDaoImpl mpaRatingDao;
 
 	@Test
 	@Sql(scripts = "/testdata.sql")
@@ -147,6 +151,17 @@ class FilmoRateApplicationTests {
 	@Test
 	void shouldGetFilmById(){
 
+		Film film = filmStorage.getById(Long.valueOf(1));
+
+		assertThat(film).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
+		assertThat(film).hasFieldOrPropertyWithValue("name", "film1");
+		assertThat(film).hasFieldOrPropertyWithValue("releaseDate", "1989-08-08");
+		assertThat(film).hasFieldOrPropertyWithValue("description", "description of the film");
+		assertThat(film).hasFieldOrPropertyWithValue("duration", Long.valueOf(139));
+		assertThat(film.getMpa()).hasFieldOrPropertyWithValue("id", 1);
+
+
+
 	}
 
 	@Test
@@ -155,35 +170,156 @@ class FilmoRateApplicationTests {
 		List<Film> films = filmStorage.findAll().stream().collect(Collectors.toList());
 		assertThat(films.size()).isEqualTo(2);
 
+		assertThat(films.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
+		assertThat(films.get(0)).hasFieldOrPropertyWithValue("name", "film1");
+		assertThat(films.get(0)).hasFieldOrPropertyWithValue("releaseDate", "1989-08-08");
+		assertThat(films.get(0)).hasFieldOrPropertyWithValue("description", "description of the film");
+		assertThat(films.get(0)).hasFieldOrPropertyWithValue("duration", Long.valueOf(139));
+		assertThat(films.get(0).getMpa()).hasFieldOrPropertyWithValue("id", 1);
+
+
+		assertThat(films.get(1)).hasFieldOrPropertyWithValue("id", Long.valueOf(3));
+		assertThat(films.get(1)).hasFieldOrPropertyWithValue("name", "new_film");
+		assertThat(films.get(1)).hasFieldOrPropertyWithValue("releaseDate", "2000-10-10");
+		assertThat(films.get(1)).hasFieldOrPropertyWithValue("description", "text");
+		assertThat(films.get(1)).hasFieldOrPropertyWithValue("duration", Long.valueOf(222));
+		assertThat(films.get(1).getMpa()).hasFieldOrPropertyWithValue("id", 5);
+
 	}
 
 	@Test
 	public void shouldCreateFilm(){
+		Film film = Film.builder()
+				.name("new_film")
+				.releaseDate("2000-10-10")
+				.description("text")
+				.duration(Long.valueOf(222))
+				.mpa(mpaRatingDao.getMpa(5))
+				.build();
+
+		filmStorage.addFilm(film);
+
+		Film film_uploaded = filmStorage.getById(Long.valueOf(3));
+
+				assertThat(film_uploaded).hasFieldOrPropertyWithValue("id", Long.valueOf(3));
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("name", "new_film");
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("releaseDate", "2000-10-10");
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("description", "text");
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("duration", Long.valueOf(222));
+		assertThat(film_uploaded.getMpa()).hasFieldOrPropertyWithValue("id", 5);
+
+
 
 	}
 
 	@Test
 	public void shouldUpdateFilm(){
+		Film film = Film.builder()
+				.id(Long.valueOf(2))
+				.name("new_film_updated")
+				.releaseDate("2001-10-10")
+				.description("txt")
+				.duration(Long.valueOf(212))
+				.mpa(mpaRatingDao.getMpa(1))
+				.build();
+
+		filmStorage.update(film);
+
+		Film film_uploaded = filmStorage.getById(Long.valueOf(2));
+
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("id", Long.valueOf(2));
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("name", "new_film_updated");
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("releaseDate", "2001-10-10");
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("description", "txt");
+		assertThat(film_uploaded).hasFieldOrPropertyWithValue("duration", Long.valueOf(212));
+		assertThat(film_uploaded.getMpa()).hasFieldOrPropertyWithValue("id", 1);
+
 
 	}
 
 	@Test
 	public void shouldRemoveFilm(){
+		int count0 = filmStorage.findAll().size();
+		assertThat(count0).isEqualTo(2);
+
+		filmStorage.remove(Long.valueOf(2));
+
+		int count = filmStorage.findAll().size();
+
+		assertThat(count).isEqualTo(1);
+
+
+	}
+
+
+
+	@Test
+	public void shouldUnlikeFilm(){
+		Long preUnlikeCount = filmStorage.getLikesCount(Long.valueOf(1));
+		assertThat(preUnlikeCount).isEqualTo(Long.valueOf(3));
+		filmStorage.unlikeFilm(Long.valueOf(1), Long.valueOf(2));
+		Long unlikeCount = filmStorage.getLikesCount(Long.valueOf(1));
+		assertThat(unlikeCount).isEqualTo(Long.valueOf(2));
+
 
 	}
 
 	@Test
 	public void shouldLikeFilm(){
+		Long prelikeCount = filmStorage.getLikesCount(Long.valueOf(1));
+
+		assertThat(prelikeCount).isEqualTo(Long.valueOf(2));
+
+		filmStorage.likeFilm(Long.valueOf(1), Long.valueOf(4));
+
+		Long likeCount = filmStorage.getLikesCount(Long.valueOf(1));
+
+		assertThat(likeCount).isEqualTo(Long.valueOf(3));
+
 
 	}
 
 	@Test
-	public void shouldUnlikeFilm(){
+	public void shouldGetTopFilmsWithoutCountValue(){
+
+		List<Film> topFilms = filmStorage.showTopFilms(Integer.valueOf(10)).stream().collect(Collectors.toList());
+
+		assertThat(topFilms.size()).isEqualTo(2);
+
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(2));
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("name", "film2");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("releaseDate", "1949-04-17");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("description", "description of the film2");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("duration", Long.valueOf(170));
+		assertThat(topFilms.get(0).getMpa()).hasFieldOrPropertyWithValue("id", 3);
+		assertThat(topFilms.get(0).getLikesCount()).isEqualTo(1);
+
+
+		assertThat(topFilms.get(1)).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
+		assertThat(topFilms.get(1)).hasFieldOrPropertyWithValue("name", "film1");
+		assertThat(topFilms.get(1)).hasFieldOrPropertyWithValue("releaseDate", "1989-08-08");
+		assertThat(topFilms.get(1)).hasFieldOrPropertyWithValue("description", "description of the film");
+		assertThat(topFilms.get(1)).hasFieldOrPropertyWithValue("duration", Long.valueOf(139));
+		assertThat(topFilms.get(1).getMpa()).hasFieldOrPropertyWithValue("id", 1);
+		assertThat(topFilms.get(0).getLikesCount()).isEqualTo(1);
+
+		// add likescountcheck
 
 	}
 
 	@Test
-	public void shouldGetTopFilms(){
+	public void shouldGetTopFilmsWithCountValue(){
+
+		List<Film> topFilms = filmStorage.showTopFilms(Integer.valueOf(1)).stream().collect(Collectors.toList());
+
+		assertThat(topFilms.size()).isEqualTo(1);
+
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(3));
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("name", "new_film");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("releaseDate", "2000-10-10");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("description", "text");
+		assertThat(topFilms.get(0)).hasFieldOrPropertyWithValue("duration", Long.valueOf(222));
+		assertThat(topFilms.get(0).getMpa()).hasFieldOrPropertyWithValue("id", 5);
 
 	}
 

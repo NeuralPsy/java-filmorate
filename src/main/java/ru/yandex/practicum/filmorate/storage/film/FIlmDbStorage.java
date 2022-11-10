@@ -101,8 +101,9 @@ public class FIlmDbStorage implements FilmStorage{
     @Override
     public boolean likeFilm(Long filmId, Long userId) {
         validation.identifyById(filmId);
+        validation.identifyUser(userId);
         String lastUpdate = LocalDate.now().format(formatter);
-        String sqlQuery = "update liked_films set film_id = ?, user_id = ?, last_update = ?;";
+        String sqlQuery = "insert into liked_films (film_id, user_id, last_update) values (?, ?, ?);";
         jdbcTemplate.update(sqlQuery, filmId, userId, lastUpdate);
         return true;
     }
