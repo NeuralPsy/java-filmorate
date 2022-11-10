@@ -25,5 +25,7 @@ public interface UserStorage {
 
     Collection<User> getCommonFriends(Long id, Long otherId);
 
-    boolean getFriendshipStatus(Long userId, Long friendId);
+    Boolean getFriendshipStatus(Long userId, Long friendId);
+
+    boolean setMutualFriendship(Long id, Long friendId, Boolean status);
 }

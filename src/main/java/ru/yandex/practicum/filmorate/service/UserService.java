@@ -98,4 +98,8 @@ public class UserService {
     public boolean getFriendhipStatus(Long userId, Long friendId) {
         return storage.getFriendshipStatus(userId, friendId);
     }
+
+    public boolean setMutualFriendship(Long id, Long friendId, Boolean status) {
+        return storage.setMutualFriendship(id, friendId, status);
+    }
 }

@@ -63,6 +63,19 @@ public class UserController {
         return userService.addFriend(id, friendId);
     }
 
+    @PutMapping("/{id}/friends/{friendId}/")
+    public boolean setMutualFriendship(@PathVariable Long id,
+                                       @PathVariable Long friendId,
+                                       @RequestParam("status") Boolean status){
+        return userService.setMutualFriendship(id, friendId, status);
+    }
+
+    @GetMapping("/friends/")
+    public boolean getFriendshipStatus(@RequestParam("userId") Long userId, @RequestParam("friendId") Long friendId){
+        System.out.println(getFriendshipStatus(userId, friendId));
+        return userService.getFriendhipStatus(userId, friendId);
+    }
+
     /**
      * @param id is path variable representing user ID
      * @param friendId is path variable representing user friend's ID
@@ -97,8 +110,7 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @GetMapping
-    public boolean getFriendshipStatus(@RequestParam Long userId, @RequestParam Long friendId){
-        return userService.getFriendhipStatus(userId, friendId);
-    }
+
+
+
 }

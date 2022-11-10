@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.validation.MemoryUserValidation;
 import ru.yandex.practicum.filmorate.validation.UserValidation;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * The class implements UserStorage interface to work with Film class objects in storage
@@ -140,11 +139,17 @@ public class InMemoryUserStorage implements UserStorage{
         this.validation = new MemoryUserValidation(users);
         validation.identifyUserId(id);
         validation.identifyUserId(otherId);
-//        return users.get(id)
-//                .getFriendList()
-//                .stream()
-//                .filter(users.get(otherId).getFriendList()::contains)
-//                .collect(Collectors.toList());
+
         return new ArrayList<>();
+    }
+
+    @Override
+    public Boolean getFriendshipStatus(Long userId, Long friendId) {
+        return false;
+    }
+
+    @Override
+    public boolean setMutualFriendship(Long id, Long friendId, Boolean status) {
+        return false;
     }
 }

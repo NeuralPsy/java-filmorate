@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.controller.MpaRatingController;
+import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.dao.impl.MpaRatingDaoImpl;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FIlmDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,18 +28,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class FilmoRateApplicationTests {
 
 	@Autowired
-	private final UserDbStorage userStorage;
+	private final UserController userController;
 
 	@Autowired
-	private final FIlmDbStorage filmStorage;
+	private final FilmController filmController;
 
 	@Autowired
-	private final MpaRatingDaoImpl mpaRatingDao;
+	private final MpaRatingController mpaController;
 
 	@Test
 	@Sql(scripts = "/testdata.sql")
 	public void shouldGetUserById() {
-		User user = userStorage.getUserById(Long.valueOf(1));
+		User user = userController.getUser(Long.valueOf(1));
 		assertThat(user).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
 		assertThat(user).hasFieldOrPropertyWithValue("name", "user1");
 		assertThat(user).hasFieldOrPropertyWithValue("login", "user1_login");
@@ -45,7 +49,7 @@ class FilmoRateApplicationTests {
 
 	@Test
 	public void shouldGetAllUsers(){
-		List<User> users = userStorage.getAllUsers().stream().collect(Collectors.toList());
+		List<User> users = userController.findAll().stream().collect(Collectors.toList());
 		assertThat(users.size()).isEqualTo(5);
 
 		assertThat(users.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
@@ -82,9 +86,9 @@ class FilmoRateApplicationTests {
 				.birthday("1987-09-10")
 				.build();
 
-		userStorage.addUser(user);
+		userController.create(user);
 
-		User uploadedUser = userStorage.getUserById(Long.valueOf(5));
+		User uploadedUser = userController.getUser(Long.valueOf(5));
 
 		assertThat(uploadedUser).hasFieldOrPropertyWithValue("id", Long.valueOf(5));
 		assertThat(uploadedUser).hasFieldOrPropertyWithValue("name", "new_user");
@@ -101,9 +105,9 @@ class FilmoRateApplicationTests {
 				.email("new@gmail.com")
 				.birthday("1987-04-11")
 				.build();
-		userStorage.updateUser(user);
+		userController.update(user);
 
-		User userUpdated = userStorage.getUserById(Long.valueOf(2));
+		User userUpdated = userController.getUser(Long.valueOf(2));
 
 		assertThat(userUpdated).hasFieldOrPropertyWithValue("id", Long.valueOf(2));
 		assertThat(userUpdated).hasFieldOrPropertyWithValue("name", "user2_updated");
@@ -113,33 +117,32 @@ class FilmoRateApplicationTests {
 
 	@Test
 	public void shouldAddFriend(){
-		userStorage.addFriend(Long.valueOf(1), Long.valueOf(3));
-		List<User> friends = userStorage.getFriendList(Long.valueOf(1)).stream().collect(Collectors.toList());
+		userController.addFriend(Long.valueOf(1), Long.valueOf(3));
+		List<User> friends = userController.getFriendList(Long.valueOf(1)).stream().collect(Collectors.toList());
 
 		assertThat(friends.size()).isEqualTo(1);
 		assertThat(friends.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(3));
 		assertThat(friends.get(0)).hasFieldOrPropertyWithValue("name", "friend1");
 		assertThat(friends.get(0)).hasFieldOrPropertyWithValue("login", "friend1_login");
 		assertThat(friends.get(0)).hasFieldOrPropertyWithValue("birthday", "1992-06-06");
-
 	}
 
 	@Test
 	public void shouldRemoveFriend(){
-		List<User> friendsBefore = userStorage.getFriendList(Long.valueOf(2)).stream().collect(Collectors.toList());
+		List<User> friendsBefore = userController.getFriendList(Long.valueOf(2)).stream().collect(Collectors.toList());
 
 		assertThat(friendsBefore.size()).isEqualTo(2);
 
-		userStorage.removeFriend(Long.valueOf(2), Long.valueOf(4));
+		userController.removeFriend(Long.valueOf(2), Long.valueOf(4));
 
-		List<User> friendsAfter = userStorage.getFriendList(Long.valueOf(2)).stream().collect(Collectors.toList());
+		List<User> friendsAfter = userController.getFriendList(Long.valueOf(2)).stream().collect(Collectors.toList());
 
 		assertThat(friendsAfter.size()).isEqualTo(1);
 	}
 
 	@Test
 	public void shouldGetCommonFriends(){
-		List<User> friends = userStorage.getCommonFriends(Long.valueOf(2), Long.valueOf(3))
+		List<User> friends = userController.getCommonFriends(Long.valueOf(2), Long.valueOf(3))
 				.stream().collect(Collectors.toList());
 		assertThat(friends.size()).isEqualTo(1);
 		assertThat(friends.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
@@ -151,7 +154,7 @@ class FilmoRateApplicationTests {
 	@Test
 	void shouldGetFilmById(){
 
-		Film film = filmStorage.getById(Long.valueOf(1));
+		Film film = filmController.getFilm(Long.valueOf(1));
 
 		assertThat(film).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
 		assertThat(film).hasFieldOrPropertyWithValue("name", "film1");
@@ -165,9 +168,8 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-//	@Sql(scripts = "src/test/resources/testdata2.sql")
 	void shouldGetAllFilms(){
-		List<Film> films = filmStorage.findAll().stream().collect(Collectors.toList());
+		List<Film> films = filmController.findAll().stream().collect(Collectors.toList());
 		assertThat(films.size()).isEqualTo(2);
 
 		assertThat(films.get(0)).hasFieldOrPropertyWithValue("id", Long.valueOf(1));
@@ -188,18 +190,18 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	public void shouldCreateFilm(){
+	public void shouldCreateFilm() throws SQLException {
 		Film film = Film.builder()
 				.name("new_film")
 				.releaseDate("2000-10-10")
 				.description("text")
 				.duration(Long.valueOf(222))
-				.mpa(mpaRatingDao.getMpa(5))
+				.mpa(mpaController.getMpaRating(5))
 				.build();
 
-		filmStorage.addFilm(film);
+		filmController.create(film);
 
-		Film film_uploaded = filmStorage.getById(Long.valueOf(3));
+		Film film_uploaded = filmController.getFilm(Long.valueOf(3));
 
 				assertThat(film_uploaded).hasFieldOrPropertyWithValue("id", Long.valueOf(3));
 		assertThat(film_uploaded).hasFieldOrPropertyWithValue("name", "new_film");
@@ -220,12 +222,12 @@ class FilmoRateApplicationTests {
 				.releaseDate("2001-10-10")
 				.description("txt")
 				.duration(Long.valueOf(212))
-				.mpa(mpaRatingDao.getMpa(1))
+				.mpa(mpaController.getMpaRating(1))
 				.build();
 
-		filmStorage.update(film);
+		filmController.update(film);
 
-		Film film_uploaded = filmStorage.getById(Long.valueOf(2));
+		Film film_uploaded = filmController.getFilm(Long.valueOf(2));
 
 		assertThat(film_uploaded).hasFieldOrPropertyWithValue("id", Long.valueOf(2));
 		assertThat(film_uploaded).hasFieldOrPropertyWithValue("name", "new_film_updated");
@@ -239,12 +241,12 @@ class FilmoRateApplicationTests {
 
 	@Test
 	public void shouldRemoveFilm(){
-		int count0 = filmStorage.findAll().size();
+		int count0 = filmController.findAll().size();
 		assertThat(count0).isEqualTo(2);
 
-		filmStorage.remove(Long.valueOf(2));
+		filmController.remove(Long.valueOf(2));
 
-		int count = filmStorage.findAll().size();
+		int count = filmController.findAll().size();
 
 		assertThat(count).isEqualTo(1);
 
@@ -255,10 +257,10 @@ class FilmoRateApplicationTests {
 
 	@Test
 	public void shouldUnlikeFilm(){
-		Long preUnlikeCount = filmStorage.getLikesCount(Long.valueOf(1));
+		Long preUnlikeCount = filmController.getFilm(Long.valueOf(1)).getLikesCount();
 		assertThat(preUnlikeCount).isEqualTo(Long.valueOf(3));
-		filmStorage.unlikeFilm(Long.valueOf(1), Long.valueOf(2));
-		Long unlikeCount = filmStorage.getLikesCount(Long.valueOf(1));
+		filmController.unlikeFilm(Long.valueOf(1), Long.valueOf(2));
+		Long unlikeCount = filmController.getFilm(Long.valueOf(1)).getLikesCount();
 		assertThat(unlikeCount).isEqualTo(Long.valueOf(2));
 
 
@@ -266,13 +268,13 @@ class FilmoRateApplicationTests {
 
 	@Test
 	public void shouldLikeFilm(){
-		Long prelikeCount = filmStorage.getLikesCount(Long.valueOf(1));
+		Long prelikeCount = filmController.getFilm(Long.valueOf(1)).getLikesCount();
 
 		assertThat(prelikeCount).isEqualTo(Long.valueOf(2));
 
-		filmStorage.likeFilm(Long.valueOf(1), Long.valueOf(4));
+		filmController.likeFilm(Long.valueOf(1), Long.valueOf(4));
 
-		Long likeCount = filmStorage.getLikesCount(Long.valueOf(1));
+		Long likeCount = filmController.getFilm(Long.valueOf(1)).getLikesCount();
 
 		assertThat(likeCount).isEqualTo(Long.valueOf(3));
 
@@ -282,7 +284,7 @@ class FilmoRateApplicationTests {
 	@Test
 	public void shouldGetTopFilmsWithoutCountValue(){
 
-		List<Film> topFilms = filmStorage.showTopFilms(Integer.valueOf(10)).stream().collect(Collectors.toList());
+		List<Film> topFilms = filmController.getTopFilms(Integer.valueOf(10)).stream().collect(Collectors.toList());
 
 		assertThat(topFilms.size()).isEqualTo(2);
 
@@ -303,14 +305,12 @@ class FilmoRateApplicationTests {
 		assertThat(topFilms.get(1).getMpa()).hasFieldOrPropertyWithValue("id", 1);
 		assertThat(topFilms.get(0).getLikesCount()).isEqualTo(1);
 
-		// add likescountcheck
-
 	}
 
 	@Test
 	public void shouldGetTopFilmsWithCountValue(){
 
-		List<Film> topFilms = filmStorage.showTopFilms(Integer.valueOf(1)).stream().collect(Collectors.toList());
+		List<Film> topFilms = filmController.getTopFilms(Integer.valueOf(1)).stream().collect(Collectors.toList());
 
 		assertThat(topFilms.size()).isEqualTo(1);
 

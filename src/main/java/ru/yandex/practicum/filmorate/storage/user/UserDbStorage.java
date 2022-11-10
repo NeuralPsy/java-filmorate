@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validation.UserValidation;
@@ -115,12 +114,18 @@ public class UserDbStorage implements UserStorage{
     }
 
 
-    @Override
-    public boolean getFriendshipStatus(Long userId, Long friendId){
+    public Boolean getFriendshipStatus(Long userId, Long friendId){
         String sqlQuery = "select status from friendlist where user_id = ? and friend_id = ?;";
+        Boolean status = jdbcTemplate.queryForObject(sqlQuery, Boolean.class, userId, friendId);
+        return status;
 
-        return jdbcTemplate.queryForObject(sqlQuery, Boolean.class, userId, friendId);
+    }
 
+    @Override
+    public boolean setMutualFriendship(Long id, Long friendId, Boolean status) {
+        String sqlQuery = "update friendlist set status = ? where user_id = ? and friend_id = ?;";
+        jdbcTemplate.update(sqlQuery, status, id, friendId);
+        return true;
     }
 
 
@@ -135,4 +140,5 @@ public class UserDbStorage implements UserStorage{
                 .build();
 
     }
+
 }

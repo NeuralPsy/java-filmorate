@@ -10,6 +10,9 @@ import ru.yandex.practicum.filmorate.service.MpaRatingService;
 
 import java.util.Collection;
 
+/**
+ * This class is to work with Mpa.class object by sending REST requests
+ */
 @RestController
 @RequestMapping(value = "/mpa")
 public class MpaRatingController {
@@ -20,11 +23,18 @@ public class MpaRatingController {
         this.mpaRatingService = mpaRatingService;
     }
 
+    /**
+     * @return Collection of Mpa.class objects according to database
+     */
     @GetMapping
     public Collection<Mpa> findAll(){
         return mpaRatingService.findAll();
     }
 
+    /**
+     * @param id is identificator of mpa row in database
+     * @return Mpa.class object with entered id
+     */
     @GetMapping("/{id}")
     public Mpa getMpaRating(@PathVariable Integer id){
         return mpaRatingService.getMpa(id);
