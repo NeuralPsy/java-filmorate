@@ -83,7 +83,7 @@ class UserControllerTest {
         user.setLogin("jasoniggy");
         BirthDayValidationException exception = Assertions.assertThrows(BirthDayValidationException.class,
                 () -> userController.create(user));
-        Assertions.assertEquals("Birthday cannot be after current date", exception.getMessage());
+        Assertions.assertEquals("Birthday cannot follow by current date", exception.getMessage());
     }
 
     @Test
