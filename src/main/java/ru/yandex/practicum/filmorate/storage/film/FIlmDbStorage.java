@@ -26,9 +26,7 @@ public class FIlmDbStorage implements FilmStorage{
     private final DbFilmValidation validation;
     private final MpaRatingDaoImpl mpa;
     private final GenreDao genreDao;
-
     private static final  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired

@@ -24,15 +24,6 @@ public class DbFilmValidation {
     }
 
 
-    public void identifyUserByIdInFilm(Long filmId, Long userId) {
-        String sqlQuery = "select count(*) from liked_films where film_id = ? and user_id = ?;";
-        boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, filmId, userId)==1;
-        if (!isValid) throw new NotPossibleToUnlikeFilmException("User with ID "
-                + userId + " didn't like the film. It is not possible to unlike");
-
-    }
-
-
     public void identifyFilm(Film film) {
         String sqlQuery = "select count(*) from films where id = ?;";
         boolean isValid = jdbcTemplate.queryForObject(sqlQuery, Integer.class, film.getId()) == 1;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.validation.DbUserValidation;
 import ru.yandex.practicum.filmorate.validation.UserValidation;
 
 import java.sql.ResultSet;
@@ -19,12 +20,12 @@ import java.util.Collection;
 public class UserDbStorage implements UserStorage{
     private final JdbcTemplate jdbcTemplate;
 
-    private final UserValidation userValidation;
+    private final DbUserValidation userValidation;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
-    public UserDbStorage (JdbcTemplate jdbcTemplate, @Qualifier("dbUserValidation") UserValidation userValidation){
+    public UserDbStorage (JdbcTemplate jdbcTemplate, @Qualifier("dbUserValidation") DbUserValidation userValidation){
         this.jdbcTemplate = jdbcTemplate;
         this.userValidation = userValidation;
     }
@@ -39,7 +40,11 @@ public class UserDbStorage implements UserStorage{
     public User addUser(User user) {
         userValidation.validateUserToCreate(user);
         String lastUpdate = LocalDate.now().format(formatter);
-        if (user.getName().equals("") || user.getName().isBlank()) user.setName(user.getLogin());
+        try{
+            if (user.getName().isEmpty()) user.setName(user.getLogin());
+        } catch (NullPointerException e){
+            user.setName(user.getLogin());
+        }
 
         String sqlQuery = "insert into users (email, login, name, birthday, last_update)" +
                 "values (?, ?, ?, ?, ?);";
