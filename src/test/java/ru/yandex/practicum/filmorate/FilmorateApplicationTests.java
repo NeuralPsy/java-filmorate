@@ -10,11 +10,8 @@ import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.MpaRatingController;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.dao.impl.MpaRatingDaoImpl;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.film.FIlmDbStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,7 +22,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-
 class FilmoRateApplicationTests {
 
 	@Autowired
@@ -38,7 +34,6 @@ class FilmoRateApplicationTests {
 	private final MpaRatingController mpaController;
 
 	@Test
-	@Order(1)
 	@Sql(scripts = "/testdata.sql")
 	public void shouldGetUserById() {
 		User user = userController.getUser(Long.valueOf(1));
@@ -50,7 +45,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(10)
 	public void shouldGetAllUsers(){
 		List<User> users = userController.findAll().stream().collect(Collectors.toList());
 		assertThat(users.size()).isEqualTo(5);
@@ -81,7 +75,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(6)
 	public void shouldAddUser(){
 		User user = User.builder()
 				.name("new_user")
@@ -101,7 +94,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(4)
 	public void shouldUpdateUser(){
 		User user = User.builder()
 				.id(Long.valueOf(2))
@@ -121,7 +113,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(5)
 	public void shouldAddFriend(){
 		userController.addFriend(Long.valueOf(1), Long.valueOf(3));
 		List<User> friends = userController.getFriendList(Long.valueOf(1)).stream().collect(Collectors.toList());
@@ -158,7 +149,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(14)
 	void shouldGetFilmById(){
 
 		Film film = filmController.getFilm(Long.valueOf(1));
@@ -175,7 +165,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(9)
 	void shouldGetAllFilms(){
 		List<Film> films = filmController.findAll().stream().collect(Collectors.toList());
 		assertThat(films.size()).isEqualTo(2);
@@ -198,7 +187,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(8)
 	public void shouldCreateFilm() throws SQLException {
 		Film film = Film.builder()
 				.name("new_film")
@@ -224,7 +212,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(3)
 	public void shouldUpdateFilm(){
 		Film film = Film.builder()
 				.id(Long.valueOf(2))
@@ -250,7 +237,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(7)
 	public void shouldRemoveFilm(){
 		int count0 = filmController.findAll().size();
 		assertThat(count0).isEqualTo(2);
@@ -267,7 +253,6 @@ class FilmoRateApplicationTests {
 
 
 	@Test
-	@Order(12)
 	public void shouldUnlikeFilm(){
 		Long preUnlikeCount = filmController.getFilm(Long.valueOf(1)).getLikesCount();
 		assertThat(preUnlikeCount).isEqualTo(Long.valueOf(3));
@@ -279,7 +264,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(11)
 	public void shouldLikeFilm(){
 		Long prelikeCount = filmController.getFilm(Long.valueOf(1)).getLikesCount();
 
@@ -295,7 +279,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(2)
 	public void shouldGetTopFilmsWithoutCountValue(){
 
 		List<Film> topFilms = filmController.getTopFilms(Integer.valueOf(10)).stream().collect(Collectors.toList());
@@ -322,7 +305,6 @@ class FilmoRateApplicationTests {
 	}
 
 	@Test
-	@Order(13)
 	public void shouldGetTopFilmsWithCountValue(){
 
 		List<Film> topFilms = filmController.getTopFilms(Integer.valueOf(1)).stream().collect(Collectors.toList());

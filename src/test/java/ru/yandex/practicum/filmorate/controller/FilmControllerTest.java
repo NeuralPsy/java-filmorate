@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.film.DescriptionValidationException;
 import ru.yandex.practicum.filmorate.exception.film.FilmDurationValidationException;
@@ -14,7 +13,6 @@ import ru.yandex.practicum.filmorate.exception.film.ReleaseDateValidationExcepti
 import ru.yandex.practicum.filmorate.model.Film;
 
 @SpringBootTest
-@AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmControllerTest {
 
