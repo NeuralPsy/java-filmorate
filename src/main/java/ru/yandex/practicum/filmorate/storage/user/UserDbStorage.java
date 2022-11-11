@@ -17,14 +17,11 @@ import java.util.Collection;
 @Component("userDbStorage")
 @Slf4j
 public class UserDbStorage implements UserStorage{
-
-    private static long idToAdd = 1;
-
     private final JdbcTemplate jdbcTemplate;
 
     private final UserValidation userValidation;
 
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     public UserDbStorage (JdbcTemplate jdbcTemplate, @Qualifier("dbUserValidation") UserValidation userValidation){
