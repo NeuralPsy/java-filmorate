@@ -12,15 +12,15 @@ public class User {
     private Long id;
 
     @Email
-    String email;
+    private String email;
 
-    String login;
+    private String login;
 
-    String name;
+    private String name;
 
     @NotNull
-    String birthday;
+    private String birthday;
 
-    String lastUpdate;
+    private String lastUpdate;
 
 }

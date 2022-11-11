@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.exception.GenreIdDoesNotExistsException;
+import ru.yandex.practicum.filmorate.exception.genre.GenreIdDoesNotExistsException;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;

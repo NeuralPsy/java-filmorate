@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
-import ru.yandex.practicum.filmorate.exception.MpaIdDoesNotExistException;
+import ru.yandex.practicum.filmorate.exception.mpa.MpaIdDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.sql.ResultSet;
