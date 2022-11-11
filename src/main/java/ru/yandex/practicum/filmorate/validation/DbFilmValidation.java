@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 @Component("dbFilmValidation")
 @Slf4j
-public class DbFilmValidation {
+public class DbFilmValidation implements FilmValidation{
 
     private final JdbcTemplate jdbcTemplate;
 

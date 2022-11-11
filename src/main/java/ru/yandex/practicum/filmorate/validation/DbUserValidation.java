@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Component("dbUserValidation")
-public class DbUserValidation {
+public class DbUserValidation implements UserValidation{
     private final JdbcTemplate jdbcTemplate;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

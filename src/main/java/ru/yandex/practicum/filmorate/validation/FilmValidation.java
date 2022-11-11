@@ -4,8 +4,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 public interface FilmValidation {
 
-    void identifyUserByIdInFilm(Long filmId, Long userId);
-
     void validateFilmToCreate(Film film);
 
     void validateFilmToUpdate(Film film);

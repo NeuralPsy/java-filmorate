@@ -5,19 +5,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.exception.film.DescriptionValidationException;
 import ru.yandex.practicum.filmorate.exception.film.FilmDurationValidationException;
 import ru.yandex.practicum.filmorate.exception.film.FilmNameValidationException;
 import ru.yandex.practicum.filmorate.exception.film.ReleaseDateValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FIlmDbStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
