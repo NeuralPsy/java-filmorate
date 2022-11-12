@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * UserController is class that allows to send API requests to realize UserService methods.
@@ -31,7 +31,7 @@ public class UserController {
      * @return list of all existing users in storage as User class objects
      */
     @GetMapping
-    public List<User> findAll(){
+    public Collection<User> findAll(){
         return userService.findAll();
     }
 
@@ -59,8 +59,21 @@ public class UserController {
      * @return ID of an added friend into friend list
      */
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable Long id, @PathVariable Long friendId){
+    public boolean addFriend(@PathVariable Long id, @PathVariable Long friendId){
         return userService.addFriend(id, friendId);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}/")
+    public boolean setMutualFriendship(@PathVariable Long id,
+                                       @PathVariable Long friendId,
+                                       @RequestParam("status") Boolean status){
+        return userService.setMutualFriendship(id, friendId, status);
+    }
+
+    @GetMapping("/friends/")
+    public boolean getFriendshipStatus(@RequestParam("userId") Long userId, @RequestParam("friendId") Long friendId){
+        System.out.println(getFriendshipStatus(userId, friendId));
+        return userService.getFriendhipStatus(userId, friendId);
     }
 
     /**
@@ -69,12 +82,12 @@ public class UserController {
      * @return ID of a friend who was removed from friend list
      */
     @DeleteMapping("/{id}/friends/{friendId}")
-    public Long removeFriend(@PathVariable Long id, @PathVariable Long friendId){
+    public boolean removeFriend(@PathVariable Long id, @PathVariable Long friendId){
         return userService.removeFriend(id, friendId);
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriendList(@PathVariable Long id){
+    public Collection<User> getFriendList(@PathVariable Long id){
         return userService.getFriendList(id);
     }
 
@@ -84,7 +97,7 @@ public class UserController {
      * @return list of User class objects
      */
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId){
+    public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId){
         return userService.getCommonFriends(id, otherId);
     }
 
@@ -96,4 +109,8 @@ public class UserController {
     public User getUser(@PathVariable Long id){
         return userService.getUser(id);
     }
+
+
+
+
 }

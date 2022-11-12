@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * FilmService is class that allows work with API requests (processed by FilmController)
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class FilmService {
+
     private final FilmStorage storage;
 
     /**
@@ -21,14 +23,14 @@ public class FilmService {
      *                to initialize storage field
      */
     @Autowired
-    public FilmService(FilmStorage storage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage storage) {
         this.storage = storage;
     }
 
     /**
      * @return list of all existing films in storage as Film class objects
      */
-    public List<Film> findAll(){
+    public Collection<Film> findAll(){
         return storage.findAll();
     }
 
@@ -38,7 +40,7 @@ public class FilmService {
      *             If one of object properties is invalid, an exception is thrown
      * @return film object if its validated and no exception were thrown
      */
-    public Film addFilm(Film film){
+    public Film addFilm(Film film) throws SQLException {
         return storage.addFilm(film);
     }
 
@@ -47,7 +49,7 @@ public class FilmService {
      * @param film is object of Film class sent from update(Film film) method of FilmController class
      *                  The object should have right format therefore it needs to be validated.
      *                  If one of object properties is invalid, an exception is thrown
-     * @return film object if its validated and no exception were thrown
+     * @return film object if its validated and no exception was thrown
      */
     public Film updateFilm(Film film){
         return storage.update(film);
@@ -80,9 +82,9 @@ public class FilmService {
      * @param userId is an ID of a user sent from likeFilm(Long filmId, Long userId) method of FilmController class
      * @return count of film likes is returned
      */
-    public Integer likeFilm(Long filmId, Long userId){
+    public Long likeFilm(Long filmId, Long userId){
         storage.likeFilm(filmId, userId);
-        return storage.getById(filmId).getLikesCount();
+        return storage.getLikesCount(filmId);
     }
 
     /**
@@ -91,21 +93,17 @@ public class FilmService {
      * @param userId is an ID of a user sent from unlikeFilm(Long filmId, Long userId) method of FilmController class
      * @return count of film likes is returned
      */
-    public Integer unlikeFilm(Long filmId, Long userId) {
+    public boolean unlikeFilm(Long filmId, Long userId) {
         return storage.unlikeFilm(filmId, userId);
     }
 
     /**
      * Method allows getting top films according to number of likes
      * @param count is value sent from showTopFilms(Integer count) method of FilmController class
-     * @return list of Film class objects is returned.
-     * Number of films is list equals "count" value
+     * @return Collection of Film class objects is returned.
+     * Number of films if list equals "count" value
      */
-    public List<Film> showTopFilms(Integer count) {
-            return storage.findAll()
-                    .stream()
-                    .sorted((film1, film2) -> film2.getLikesCount().compareTo(film1.getLikesCount()))
-                    .limit(count)
-                    .collect(Collectors.toList());
+    public Collection<Film> showTopFilms(Integer count) {
+            return storage.showTopFilms(count);
     }
 }

@@ -6,7 +6,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * FilmController is class that allows to send API requests to do realize FilmService methods.
@@ -30,7 +31,7 @@ public class FilmController {
      * @return list of all existing films in storage as Film class objects
      */
     @GetMapping
-    public List<Film> findAll(){
+    public Collection<Film> findAll(){
         return filmService.findAll();
     }
 
@@ -42,7 +43,7 @@ public class FilmController {
      * @return film object if its validated and no exception were thrown
      */
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) throws SQLException {
         return filmService.addFilm(film);
     }
 
@@ -96,7 +97,7 @@ public class FilmController {
      * @return count of film likes is returned
      */
     @PutMapping("/{filmId}/like/{userId}")
-    public Integer likeFilm(@PathVariable Long filmId, @PathVariable Long userId){
+    public Long likeFilm(@PathVariable Long filmId, @PathVariable Long userId){
         return filmService.likeFilm(filmId, userId);
     }
 
@@ -112,7 +113,7 @@ public class FilmController {
      */
 
     @DeleteMapping("/{filmId}/like/{userId}")
-    public Integer unlikeFilm(@PathVariable Long filmId, @PathVariable Long userId){
+    public boolean unlikeFilm(@PathVariable Long filmId, @PathVariable Long userId){
         return filmService.unlikeFilm(filmId, userId);
     }
 
@@ -124,7 +125,8 @@ public class FilmController {
      * Number of films is list equals "count" request parameter
      */
     @GetMapping("/popular")
-    public List<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
+    public Collection<Film> getTopFilms(@RequestParam(defaultValue = "10", required = false) Integer count){
         return filmService.showTopFilms(count);
     }
+
 }

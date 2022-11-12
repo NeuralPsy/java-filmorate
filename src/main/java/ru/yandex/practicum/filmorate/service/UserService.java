@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
 /**
  * UserService is class that allows work with API requests (processed by FilmController)
@@ -22,14 +21,14 @@ public class UserService {
      *                to initialize storage field
      */
     @Autowired
-    public UserService(UserStorage storage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage storage) {
         this.storage = storage;
     }
 
     /**
      * @return list of all existing users in storage as User class objects
      */
-    public List<User> findAll() {
+    public Collection<User> findAll() {
         return storage.getAllUsers();
     }
 
@@ -55,7 +54,7 @@ public class UserService {
      *                 used with this ID will be added into friend list if its existence in user storage is validated
      * @return ID of user added list
      */
-    public User addFriend(Long id, Long friendId) {
+    public boolean addFriend(Long id, Long friendId) {
         return storage.addFriend(id, friendId);
     }
 
@@ -65,7 +64,7 @@ public class UserService {
      *                 used with this ID will be deleted from friend list if its existence in user storage is validated
      * @return ID of user removed from friend list
      */
-    public Long removeFriend(Long id, Long friendId) {
+    public boolean removeFriend(Long id, Long friendId) {
         return storage.removeFriend(id, friendId);
     }
 
@@ -73,11 +72,9 @@ public class UserService {
      * @param id user ID entered from getFriendList(Long id) method of UserController class
      * @return list of User class objects
      */
-    public List<User> getFriendList(Long id) {
-        return storage.getFriendList(id)
-                .stream()
-                .map(id0 -> storage.getUserById(id0))
-                .collect(Collectors.toList());
+
+    public Collection<User> getFriendList(Long id) {
+        return storage.getFriendList(id);
     }
 
     /**
@@ -86,10 +83,8 @@ public class UserService {
      *                whose common friends user needs to get
      * @return list of User class objects
      */
-    public List<User> getCommonFriends(Long id, Long otherId) {
-        List<User> users = new ArrayList<>();
-        storage.getCommonFriends(id, otherId).forEach(commonId -> users.add(storage.getUserById(commonId)));
-        return users;
+    public Collection<User> getCommonFriends(Long id, Long otherId) {
+        return storage.getCommonFriends(id, otherId);
     }
 
     /**
@@ -98,5 +93,13 @@ public class UserService {
      */
     public User getUser(Long id) {
         return storage.getUserById(id);
+    }
+
+    public boolean getFriendhipStatus(Long userId, Long friendId) {
+        return storage.getFriendshipStatus(userId, friendId);
+    }
+
+    public boolean setMutualFriendship(Long id, Long friendId, Boolean status) {
+        return storage.setMutualFriendship(id, friendId, status);
     }
 }

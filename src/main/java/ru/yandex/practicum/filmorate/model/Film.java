@@ -1,22 +1,21 @@
 package ru.yandex.practicum.filmorate.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
+@EqualsAndHashCode
 public class Film {
 
     private long id;
-
-    @JsonIgnore
-    private Set<Long> usersWhoLiked = new HashSet<>();
 
     @NotBlank
     private String name;
@@ -30,22 +29,13 @@ public class Film {
     @Positive
     private long duration;
 
-    @JsonIgnore
-    private int likesCount = 0;
+    private Mpa mpa;
 
-    public Long like(Long userId) {
-        usersWhoLiked.add(userId);
-        likesCount = usersWhoLiked.size();
-        return userId;
-    }
+    private Set<Genre> genres;
 
-    public Long unlike(Long userId) {
-        usersWhoLiked.remove(userId);
-        likesCount = usersWhoLiked.size();
-        return userId;
-    }
+    @EqualsAndHashCode.Include
+    private Long likesCount;
 
-    public Integer getLikesCount(){
-        return likesCount;
-    }
+    private String lastUpdate;
+
 }

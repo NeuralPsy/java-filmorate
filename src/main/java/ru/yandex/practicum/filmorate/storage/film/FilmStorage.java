@@ -2,27 +2,29 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.List;
+import java.sql.SQLException;
+import java.util.Collection;
 
 /**
  * Interface to work with storage of Film class objects
  */
 public interface FilmStorage {
 
-    Film addFilm(Film film);
+    Film addFilm(Film film) throws SQLException;
 
     Long remove(Long filmId);
 
     Film update(Film film);
 
-    List<Film> findAll();
+    Collection<Film> findAll();
 
     Film getById(Long filmId);
 
-    Integer likeFilm(Long filmId, Long userId);
+    boolean likeFilm(Long filmId, Long userId);
 
-    Integer unlikeFilm(Long filmId, Long userId);
+    boolean unlikeFilm(Long filmId, Long userId);
 
-    void identifyById(Long id);
+    Long getLikesCount(Long filmId);
 
+    Collection<Film> showTopFilms(Integer count);
 }

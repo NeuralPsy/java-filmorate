@@ -1,25 +1,29 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exception.user.BirthDayValidationException;
 import ru.yandex.practicum.filmorate.exception.user.EmailValidationException;
 import ru.yandex.practicum.filmorate.exception.user.LoginValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class UserControllerTest {
 
-    private UserController userController = new UserController(new UserService(new InMemoryUserStorage()));
+    @Autowired
+    private UserController userController;
     private User user;
 
     @BeforeEach
     void createUser(){
-        user  = new User();
+        user  = User.builder().build();
     }
 
     @Test
@@ -83,7 +87,7 @@ class UserControllerTest {
         user.setLogin("jasoniggy");
         BirthDayValidationException exception = Assertions.assertThrows(BirthDayValidationException.class,
                 () -> userController.create(user));
-        Assertions.assertEquals("Birthday cannot be after current date", exception.getMessage());
+        Assertions.assertEquals("Birthday cannot follow by current date", exception.getMessage());
     }
 
     @Test
